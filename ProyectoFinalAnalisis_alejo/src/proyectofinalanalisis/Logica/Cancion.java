@@ -16,21 +16,26 @@ import java.util.Scanner;
  */
 public class Cancion {
 
-//    private String nombre;
+    private String nombre;
     private String letra;
     private ArrayList<String> letra_renglones;
     private String ruta_archivo;
     private String[][] frecuencia_letras;
-    
 
-    public Cancion(String ruta_archivo) {
+    public Cancion(String ruta_archivo, String nombre) {
+        this.nombre = nombre;
         this.ruta_archivo = ruta_archivo;
         frecuencia_letras = Utilidades.getMoldeTabla();
+    }
 
+    /**
+     * metodo que permite leer la cancion y de una vez calcular la frecuencia de
+     * letras
+     */
+    public void leer_cancion() {
         if (leer_archivo()) {
             calcular_frecuencia_letras();
         }
-
     }
 
     /**
@@ -100,10 +105,10 @@ public class Cancion {
 
     }
 
-    
     /**
      * metodo que permite obtener la frecuencia de letras
-     * @return 
+     *
+     * @return
      */
     public String[][] getFrecuencia_letras() {
         return frecuencia_letras;

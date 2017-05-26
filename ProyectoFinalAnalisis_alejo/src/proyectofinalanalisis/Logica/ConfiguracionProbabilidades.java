@@ -35,13 +35,15 @@ public class ConfiguracionProbabilidades {
 
     public ConfiguracionProbabilidades(String ruta_archivo) {
         this.ruta_archivo = ruta_archivo;
+                
+        leer_archivo();
     }
 
     /**
      * metodo que permite cargar la información del objetvo desde el fichero
      * @return boolean
      */
-    public boolean cargar() {
+    public boolean leer_archivo() {
 
         Properties propiedades = new Properties();
         InputStream entrada = null;
@@ -115,6 +117,8 @@ public class ConfiguracionProbabilidades {
         return true;
     }
 
+    
+    
     public String getRuta_archivo() {
         return ruta_archivo;
     }

@@ -11,12 +11,13 @@ package proyectofinalanalisis.Logica;
  */
 public class Utilidades {
 
-    private final String ruta_banco = "banco";
+    final static String BANCO_CANCIONES = "banco/canciones";
+    final static String BANCO_CONFIGURACION = "banco/config";
 
-    
     /**
      * metodo que permite crear una tabla vacia lista para usar
-     * @return 
+     *
+     * @return
      */
     public static String[][] getMoldeTabla() {
 
