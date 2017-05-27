@@ -6,7 +6,7 @@
 package interfaz;
 
 import java.util.Properties;
-import proyectofinalanalisis.Logica.Logica;
+import logica.Compositor;
 
 
 /**
@@ -15,7 +15,7 @@ import proyectofinalanalisis.Logica.Logica;
  */
 public class InterfazCargarPropiedades extends javax.swing.JFrame {
 
-    private final Logica compositor;
+    private final Compositor compositor;
     private Properties propiedades;
 
     /**
@@ -23,11 +23,11 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
      *
      * @param compositor
      */
-    public InterfazCargarPropiedades(Logica compositor) {
+    public InterfazCargarPropiedades(Compositor compositor) {
         initComponents();
         setSize(218, 540);
         setLocationRelativeTo(null);
-        this.compositor = new Logica();
+        this.compositor = compositor;
     }
 
     public void cargarPropiedades() {

@@ -6,7 +6,7 @@
 package interfaz;
 
 import java.awt.Color;
-import proyectofinalanalisis.Logica.Logica;
+import logica.Compositor;
 
 /**
  *
@@ -14,16 +14,16 @@ import proyectofinalanalisis.Logica.Logica;
  */
 public class InterfazPrincipal extends javax.swing.JFrame {
 
-    private final Logica compositor;
+    private final Compositor compositor;
     
     /**
      * Constructor de la clase VentanaPrincipal
      */
     public InterfazPrincipal() {
         initComponents();
-        setSize(330, 500);
+        setSize(330, 520);
         setLocationRelativeTo(null);
-        compositor = new Logica();
+        compositor = new Compositor();
     }
     
     private void configurarProbabilidades(){
@@ -55,13 +55,13 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         //compositor.inicializarProgressBar(lblGenerando, progressbar);
         
         char caracter = txtLetra.getText().charAt(0);
-       /* if(!compositor.generarCancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano)){
+        if(!compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano)){
             lblGenerando.setText("Error al generar la nueva canción.");
         }else{
-            /*lblGenerando.setText("Canción generada!");
+            lblGenerando.setText("Canción generada!");
             InterfazReproducir interfazReproducir = new InterfazReproducir(this);
-            interfazReproducir.setVisible(true);*/
-       // }
+            interfazReproducir.setVisible(true);
+        }
     }  
 
     /**
@@ -165,7 +165,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo.png"))); // NOI18N
         panelPrincipal.add(lblFondo);
-        lblFondo.setBounds(0, 0, 330, 450);
+        lblFondo.setBounds(0, 0, 330, 490);
 
         menuArchivo.setText("Archivo");
 
@@ -193,7 +193,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
         );
 
         pack();
