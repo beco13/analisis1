@@ -22,6 +22,7 @@ public class ProyectoFinalAnalisis {
         
         Logica logica = new Logica();
         logica.cargar_generos();
+        logica.cargar_letras();
         
     }
     
