@@ -47,6 +47,8 @@ public class Logica {
 
                     // agregamos el genero a la lista de generos
                     generos.add(tmpGenero);
+                    
+                    break;
                 }
 
             }

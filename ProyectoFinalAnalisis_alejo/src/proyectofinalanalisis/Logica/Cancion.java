@@ -5,10 +5,10 @@
  */
 package proyectofinalanalisis.Logica;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  *
@@ -26,6 +26,7 @@ public class Cancion {
         this.nombre = nombre;
         this.ruta_archivo = ruta_archivo;
         frecuencia_letras = Utilidades.getMoldeTabla();
+        letra_renglones = new ArrayList<>();
     }
 
     /**
@@ -45,24 +46,18 @@ public class Cancion {
      */
     public boolean leer_archivo() {
 
-        File f = new File(ruta_archivo);
-        String cadena;
-        Scanner entrada = null;
         try {
-            entrada = new Scanner(f);
-            while (entrada.hasNext()) {
-                // leemos la linea
-                cadena = entrada.nextLine();
+            FileReader fileReader = new FileReader(ruta_archivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String cadena = "";
+
+            while ((cadena = bufferedReader.readLine()) != null) {
                 letra += cadena + " ";
-                letra_renglones.add(letra);
+                letra_renglones.add(cadena);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error al buscar el archivo, el sistema no encuentra la ruta de acceso especificado");
             return false;
-        } finally {
-            if (entrada != null) {
-                entrada.close();
-            }
         }
 
         return true;
@@ -88,21 +83,28 @@ public class Cancion {
                     // 
                     if (vocabulario[j] == letra_renglones.get(i).charAt(k)) {
 
-                        if ((k - 1) >= 1) {
+                        if ((k - 1) >= 0) {
 
                             char x = letra_renglones.get(i).charAt(k - 1);
                             int index = new String(vocabulario).indexOf(x);
+                            if (index != -1) {
+                                
+                                int suma = 0;
 
-                            frecuencia_letras[j + 1][index + 1] += 1;
+                                try {
+                                    suma = Integer.parseInt(frecuencia_letras[j + 1][index + 1]) + 1;
+                                } catch (NumberFormatException exception) {
+                                    System.out.println("Hubo un error: " + frecuencia_letras[j + 1][index + 1] + " valor j " + j + " valor index " + index);
 
+                                }
+
+                                frecuencia_letras[j + 1][index + 1] = "" + suma;
+                            }
                         }
-
                     }
-
                 }
             }
         }
-
     }
 
     /**

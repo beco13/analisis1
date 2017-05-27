@@ -30,6 +30,12 @@ public class Utilidades {
             molde[0][i + 1] = Character.toString(simbolos.charAt(i));
             molde[i + 1][0] = Character.toString(simbolos.charAt(i));
         }
+        
+        for(int a = 1; a < molde.length; a++){
+            for(int b = 1; b < molde.length; b++){
+                molde[a][b] = "0";
+            }
+        }
 
         return molde;
     }
