@@ -89,14 +89,7 @@ public class Cancion {
                     }
                 }
             }
-        }
-        
-        for(int i = 0; i < frecuencia_letras.length; i++){
-            for(int j = 0; j < frecuencia_letras.length; j++){
-                System.out.print(frecuencia_letras[i][j] + " ");
-            }
-            System.out.println("");
-        }
+        }       
     }
 
     /**

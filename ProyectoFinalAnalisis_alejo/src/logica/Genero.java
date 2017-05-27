@@ -6,6 +6,7 @@
 package logica;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -18,18 +19,14 @@ public class Genero implements Runnable {
     private String ruta_carpeta;
     private ArrayList<Cancion> lista_canciones = new ArrayList<>();
     private int[][] frecuencia_acumulada;
-    private int[][] matriz_transicion;
+    private double[][] matriz_transicion;
     private ConfiguracionProbabilidades configuracion;
 
     public Genero(String ruta_carpeta, String nombre) {
         this.ruta_carpeta = ruta_carpeta;
         this.nombre = nombre;
         frecuencia_acumulada = new int[30][30];
-        matriz_transicion = new int[30][30];
-    }
-
-    public String getNombre() {
-        return nombre;
+        matriz_transicion = new double[30][30];
     }
 
     /**
@@ -56,7 +53,7 @@ public class Genero implements Runnable {
     /**
      * metodo que permite cargar las canciones del genero
      */
-    public void cargar_canciones() {
+    private void cargar_canciones() {
 
         // cargamos la ubicacion del directorio donde esta el banco de canciones
         File directorio = new File(ruta_carpeta);
@@ -90,7 +87,7 @@ public class Genero implements Runnable {
      * metodo que permite calcular la frecuencia de letras de todas las
      * canciones
      */
-    public void calcular_frecuencia_letras() {
+    private void calcular_frecuencia_letras() {
 
         // recorremos todas las listas de canciones
         for (int i = 0; i < lista_canciones.size(); i++) {
@@ -111,15 +108,47 @@ public class Genero implements Runnable {
             }
 
         }
-
-        System.out.println("MI MATRIZ");
-        for (int i = 0; i < frecuencia_acumulada.length; i++) {
-            for (int j = 0; j < frecuencia_acumulada[0].length; j++) {
+        System.out.println("MATRIZ FRECUENCIA");
+        for(int i = 0; i < frecuencia_acumulada.length; i++){
+            for(int j = 0; j < frecuencia_acumulada.length; j++){
                 System.out.print(frecuencia_acumulada[i][j] + " ");
             }
             System.out.println("");
         }
 
+    }
+
+    /**
+     * Este metodo se encarga de calcular la matriz de transicion del género
+     */
+    private void calcular_matriz_transicion() {
+
+        for (int i = 0; i < matriz_transicion.length; i++) {
+            
+            int cantidadVeces = 0;
+            
+            for (int j = 0; j < matriz_transicion.length; j++) {
+                cantidadVeces += frecuencia_acumulada[i][j];
+            }
+            
+            if (cantidadVeces != 0) {
+                
+                matriz_transicion[i][0] = ((double)frecuencia_acumulada[i][0] / (double)cantidadVeces);
+
+                for (int j = 1; j < matriz_transicion.length; j++) {
+                    
+                    matriz_transicion[i][j] = ((double)frecuencia_acumulada[i][j] / (double)cantidadVeces) + matriz_transicion[i][j - 1];
+                }
+            }
+
+        }
+        System.out.println("MATRIZ TRANSICION");
+        for(int i = 0; i < matriz_transicion.length; i++){
+            for(int j = 0; j < matriz_transicion.length; j++){
+                System.out.print(matriz_transicion[i][j] + " ");
+            }
+            System.out.println("");
+        }
     }
 
     @Override
@@ -128,6 +157,12 @@ public class Genero implements Runnable {
         cargar_canciones();
 
         calcular_frecuencia_letras();
+        
+        calcular_matriz_transicion();
 
+    }
+
+    public String getNombre() {
+        return nombre;
     }
 }

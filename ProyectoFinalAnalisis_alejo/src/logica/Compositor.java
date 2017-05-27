@@ -119,19 +119,19 @@ public class Compositor {
             return false;
         }
 
+        // si ya se ejecuto una vez, omite este paso
         if (!ejecutado) {
             // leer cada genero a través de un hilo
             cargar_letras();
             ejecutado = true;
         }
-        
-        // calcular matriz de transición
 
+        // calcular matriz de transición
         // generamos los vectores que almacenarán la canción y las probabilidades aleatorias
         generarVectores(caracter, tamano);
 
         // llenar vector con la nueva canción
-        //crear_cancion();
+        crear_cancion();
 
         return true;
 
@@ -142,9 +142,25 @@ public class Compositor {
      */
     private void crear_cancion() {
 
+        // iteramos el arreglo de caracteres
         for (int i = 0; i < probabilidades.length; i++) {
+            
+            //guarda el nuevo caracter de la canción
             caracteres[i + 1] = obtener_caracter(probabilidades[i], caracteres[i]);
         }
+
+        System.out.println("La canción: ");
+        int cont = 0;
+        for (int i = 0; i < caracteres.length; i++) {
+            System.out.print(caracteres[i]);
+            cont++;
+            if (cont == 20) {
+                System.out.println("");
+                cont = 0;
+            }
+        }
+
+        System.out.println("");
     }
 
     /**
@@ -160,25 +176,39 @@ public class Compositor {
      */
     private char obtener_caracter(double valor_probabilidad, char letra_actual) {
 
+        // caracter a retornar que tenga la probabilidad más proxima
         char caracter_nuevo = '?';
 
-        for (int i = 0; i < matriz_transicion[0].length; i++) {
+        // iteramos las filas de la matriz de transicion
+        for (int i = 1; i < matriz_transicion.length; i++) {
 
-            if (matriz_transicion[i][0].charAt(0) == letra_actual) {
+            // entra cuando encuentre en la matriz (fila) la letra que viene como parametro
+            if (matriz_transicion[0][i].charAt(0) == letra_actual) {
 
+                // variable aux para castear los valores de la matriz de transicion
                 double aux;
 
+                // iteramos las columnas en busca de la probabilidad especficada como parámetro
                 for (int j = 1; j < matriz_transicion.length; j++) {
 
+                    // asignamos el valor casteado
                     aux = Double.parseDouble(matriz_transicion[i][j]);
 
+                    // pregunta si la probabilidad en curso es igual a la de parámetro
                     if (aux == valor_probabilidad) {
+
+                        // si es asi retorna ese caracter inmediatamente
                         return matriz_transicion[0][i].charAt(0);
-                    } else if (aux < valor_probabilidad) {
+
+                    } // pregunta si la probabilidad en curso es menor a la buscada (la más cercanada a la buscada)
+                    else if (aux < valor_probabilidad) {
+
+                        // se asigna el caracter con la probabilidad más cercana a la buscada
                         caracter_nuevo = matriz_transicion[0][i].charAt(0);
                     }
                 }
 
+                // como ya encontro la fila necesaria rompe el ciclo
                 break;
             }
         }

@@ -103,7 +103,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             }
         });
         panelPrincipal.add(btnConfigurarProbabilidades);
-        btnConfigurarProbabilidades.setBounds(10, 270, 306, 40);
+        btnConfigurarProbabilidades.setBounds(10, 290, 306, 40);
 
         btnConfigurarProbabilidades1.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         btnConfigurarProbabilidades1.setText("Generar Canción");
@@ -117,7 +117,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             }
         });
         panelPrincipal.add(btnConfigurarProbabilidades1);
-        btnConfigurarProbabilidades1.setBounds(10, 390, 306, 40);
+        btnConfigurarProbabilidades1.setBounds(10, 410, 306, 40);
 
         txtTamano.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         txtTamano.setText("Tamaño");
@@ -133,7 +133,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             }
         });
         panelPrincipal.add(txtTamano);
-        txtTamano.setBounds(117, 330, 90, 40);
+        txtTamano.setBounds(120, 350, 90, 40);
 
         txtLetra.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         txtLetra.setText("Letra");
@@ -149,19 +149,19 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             }
         });
         panelPrincipal.add(txtLetra);
-        txtLetra.setBounds(10, 330, 90, 40);
+        txtLetra.setBounds(10, 350, 90, 40);
 
         cmbGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bachata", "Balada", "Merengue", "Pop", "Ranchera", "Reggae", "Reggaeton", "Rock", "Salsa", "Vallenato" }));
         cmbGenero.setFocusable(false);
         panelPrincipal.add(cmbGenero);
-        cmbGenero.setBounds(225, 330, 90, 40);
+        cmbGenero.setBounds(220, 350, 90, 40);
         panelPrincipal.add(progressbar);
-        progressbar.setBounds(10, 240, 306, 14);
+        progressbar.setBounds(10, 260, 306, 14);
 
         lblGenerando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         panelPrincipal.add(lblGenerando);
-        lblGenerando.setBounds(0, 200, 330, 29);
+        lblGenerando.setBounds(0, 220, 330, 29);
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo.png"))); // NOI18N
         panelPrincipal.add(lblFondo);
