@@ -28,6 +28,12 @@ public class Genero implements Runnable {
         matriz_transicion = Utilidades.getMoldeTabla();
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+    
+    
+
     /**
      * metodo que permite cargar el archivo de configuracion del genero
      *
@@ -71,10 +77,17 @@ public class Genero implements Runnable {
 
                     // inicializamos la cancion con la ruta del archivo                    
                     Cancion tmpCancion = new Cancion(ficheros[x].getPath(), ficheros[x].getName());
+                    
+                    // leemos la cancion
+                    tmpCancion.leer_cancion();
 
                     // agregamos la lista de canciones al archivo
                     lista_canciones.add(tmpCancion);
+                    
+                    break;
                 }
+                
+                
 
             }
         }
@@ -83,11 +96,9 @@ public class Genero implements Runnable {
 
     @Override
     public void run() {
-
-        cargar_configuracion();
-
+        
         cargar_canciones();
-
+        
     }
 
 }

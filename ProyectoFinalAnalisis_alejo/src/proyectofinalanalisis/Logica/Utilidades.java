@@ -33,4 +33,29 @@ public class Utilidades {
 
         return molde;
     }
+    
+    
+    public static String[][] getMoldeTabla( String[][] molde) {
+
+        // almacenamos los simbolos que van a interactuar en la tabla
+        String simbolos = "abcdefghijklmnñopqrstuvwxyz,. ";
+
+        for (int i = 0; i < simbolos.length(); i++) {
+            molde[0][i + 1] = Character.toString(simbolos.charAt(i));
+            molde[i + 1][0] = Character.toString(simbolos.charAt(i));
+        }
+
+        return molde;
+    }
+    
+
+    public static void imprimir(String[][] matriz) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[0].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
 }

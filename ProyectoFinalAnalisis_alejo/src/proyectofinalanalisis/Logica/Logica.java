@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Logica {
 
     private ArrayList<Genero> generos = new ArrayList<>();
-    
+
     /**
      * metodo que permite cargar los generos de la carpeta de banco
      */
@@ -39,17 +39,29 @@ public class Logica {
                     // inicializamos el genero por la carpeta
                     Genero tmpGenero = new Genero(ficheros[x].getPath(), ficheros[x].getName());
                     
-                    // cargamos el genero (hilo)
-                    Thread tmpThreadGenero = new Thread(tmpGenero, ficheros[x].getName());
-                    
-                    // inicializamos el genero
-                    tmpThreadGenero.start();
+                    // cargamos la configuracion del genero
+                    tmpGenero.cargar_configuracion();
 
                     // agregamos el genero a la lista de generos
                     generos.add(tmpGenero);
+
+                    break;
                 }
 
             }
+        }
+
+    }
+
+    public void cargar_letras() {
+
+        for (int i = 0; i < generos.size(); i++) {
+            // cargamos el genero (hilo)
+            Thread tmpThreadGenero = new Thread(generos.get(i), generos.get(i).getNombre());
+
+            // inicializamos el genero
+            tmpThreadGenero.start();
+
         }
 
     }

@@ -5,8 +5,11 @@
  */
 package proyectofinalanalisis.Logica;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,8 +27,8 @@ public class Cancion {
 
     public Cancion(String ruta_archivo, String nombre) {
         this.nombre = nombre;
-        this.ruta_archivo = ruta_archivo;
-        frecuencia_letras = Utilidades.getMoldeTabla();
+        this.ruta_archivo = ruta_archivo;        
+        letra_renglones = new ArrayList<>();
     }
 
     /**
@@ -34,7 +37,8 @@ public class Cancion {
      */
     public void leer_cancion() {
         if (leer_archivo()) {
-            calcular_frecuencia_letras();
+            frecuencia_letras = Utilidades.getMoldeTabla(calcular_frecuencia_letras(letra_renglones));
+            Utilidades.imprimir(frecuencia_letras);
         }
     }
 
@@ -45,24 +49,20 @@ public class Cancion {
      */
     public boolean leer_archivo() {
 
-        File f = new File(ruta_archivo);
-        String cadena;
-        Scanner entrada = null;
+        System.out.println("archivo: " + ruta_archivo);
+
         try {
-            entrada = new Scanner(f);
-            while (entrada.hasNext()) {
-                // leemos la linea
-                cadena = entrada.nextLine();
+            FileReader fileReader = new FileReader(ruta_archivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String cadena = "";
+
+            while ((cadena = bufferedReader.readLine()) != null) {
+                letra_renglones.add(cadena);
                 letra += cadena + " ";
-                letra_renglones.add(letra);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error al buscar el archivo, el sistema no encuentra la ruta de acceso especificado");
             return false;
-        } finally {
-            if (entrada != null) {
-                entrada.close();
-            }
         }
 
         return true;
@@ -70,39 +70,49 @@ public class Cancion {
 
     /**
      * metodo que permite calcular la frecuencia de letras de la canción
+     *
+     * @param cancion
+     * @return
      */
-    public void calcular_frecuencia_letras() {
+    public String[][] calcular_frecuencia_letras(ArrayList<String> cancion) {
 
         char[] vocabulario = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o',
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ',', '.', ' '};
 
-        // iteramos la lista de letras por renglones
-        for (int i = 0; i < letra_renglones.size(); i++) {
+        String ma[][] = new String[31][31];
+        int[][] matriz = new int[30][30];
 
-            // iteramos el vocabulario
+        for (int i = 0; i < cancion.size(); i++) {
             for (int j = 0; j < vocabulario.length; j++) {
-
-                // iteramos sobre la cadena que se haye en la posicion i
-                for (int k = 0; k < letra_renglones.get(i).length(); k++) {
-
-                    // 
-                    if (vocabulario[j] == letra_renglones.get(i).charAt(k)) {
-
-                        if ((k - 1) >= 1) {
-
-                            char x = letra_renglones.get(i).charAt(k - 1);
+                for (int k = 0; k < cancion.get(i).length(); k++) {
+                    if (vocabulario[j] == cancion.get(i).charAt(k)) {
+                        if ((k - 1) >= 0) {
+                            char x = cancion.get(i).charAt(k - 1);
                             int index = new String(vocabulario).indexOf(x);
 
-                            frecuencia_letras[j + 1][index + 1] += 1;
+//                            System.out.println("Cadena : " + x + " Vocabulario index : " + new String(vocabulario).indexOf(x) + " Vocabulario letra"
+//                                    + ": " + vocabulario[new String(vocabulario).indexOf(x)]);
+//                            System.out.println("j: " + j + " index: " + index);
 
+
+                            if(index > 0){
+                                matriz[j][index] += 1;
+                            }
+                            
                         }
-
                     }
-
                 }
             }
         }
 
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[0].length; j++) {
+                ma[i + 1][j + 1] = String.valueOf(matriz[i][j]);
+            }
+        }
+
+        matriz = null;        
+        return ma;
     }
 
     /**
