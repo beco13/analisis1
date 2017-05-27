@@ -29,6 +29,7 @@ public class Compositor {
      */
     public Compositor() {
         cargar_generos();
+        matriz_transicion = Utilidades.getMoldeTabla();
         ejecutado = false;
     }
 
@@ -130,7 +131,7 @@ public class Compositor {
         generarVectores(caracter, tamano);
 
         // llenar vector con la nueva canción
-        crear_cancion();
+        //crear_cancion();
 
         return true;
 

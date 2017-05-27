@@ -7,7 +7,6 @@ package logica;
 
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,15 +17,15 @@ public class Genero implements Runnable {
     private String nombre;
     private String ruta_carpeta;
     private ArrayList<Cancion> lista_canciones = new ArrayList<>();
-    private String[][] frecuencia_acumulada;
-    private String[][] matriz_transicion;
+    private int[][] frecuencia_acumulada;
+    private int[][] matriz_transicion;
     private ConfiguracionProbabilidades configuracion;
 
     public Genero(String ruta_carpeta, String nombre) {
         this.ruta_carpeta = ruta_carpeta;
         this.nombre = nombre;
-        frecuencia_acumulada = Utilidades.getMoldeTabla();
-        matriz_transicion = Utilidades.getMoldeTabla();
+        frecuencia_acumulada = new int[30][30];
+        matriz_transicion = new int[30][30];
     }
 
     public String getNombre() {
@@ -93,8 +92,6 @@ public class Genero implements Runnable {
      */
     public void calcular_frecuencia_letras() {
 
-        int matrizPrueba[][] = new int[30][30];
-
         // recorremos todas las listas de canciones
         for (int i = 0; i < lista_canciones.size(); i++) {
 
@@ -102,32 +99,25 @@ public class Genero implements Runnable {
             int tamano_matriz = lista_canciones.get(i).getFrecuencia_letras().length;
 
             // recorrer la matriz de frecuencia de letras de cada una de las canciones: iteramos cada fila
-            for (int j = 1; j < tamano_matriz; j++) {
+            for (int j = 0; j < tamano_matriz; j++) {
 
                 // iteramos las columnas de la matriz de frecuencia de letras de cada una de las canciones 
-                for (int k = 1; k < tamano_matriz; k++) {
+                for (int k = 0; k < tamano_matriz; k++) {
 
-                    try {
+                    // almacenamos la suma de matrices
+                    frecuencia_acumulada[j][k] += lista_canciones.get(i).getFrecuencia_letras()[j][k];
 
-                        // casteamos a entero 
-                        //int suma_almacenada = Integer.parseInt(frecuencia_acumulada[j][k]);
-                        int frecuencia_letra = Integer.parseInt(lista_canciones.get(i).getFrecuencia_letras()[j][k]);
-
-                        // almacenamos la suma de matrices
-                        matrizPrueba[j - 1][k - 1] += frecuencia_letra;
-
-                    } catch (NumberFormatException exception) {
-                        System.err.println("Ocurrió un error con el calculo de la matriz, existe una cadena, error: " + exception.getMessage());
-                    }
                 }
             }
 
         }
 
-        for (int i = 0; i < matrizPrueba.length; i++) {
-            for (int j = 0; j < matrizPrueba[0].length; j++) {
-                frecuencia_acumulada[i + 1][j + 1] = String.valueOf(matrizPrueba[i][j]);
+        System.out.println("MI MATRIZ");
+        for (int i = 0; i < frecuencia_acumulada.length; i++) {
+            for (int j = 0; j < frecuencia_acumulada[0].length; j++) {
+                System.out.print(frecuencia_acumulada[i][j] + " ");
             }
+            System.out.println("");
         }
 
     }

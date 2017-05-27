@@ -20,11 +20,11 @@ public class Cancion {
     private String letra;
     private ArrayList<String> letra_renglones;
     private String ruta_archivo;
-    private String[][] frecuencia_letras;
+    private int[][] frecuencia_letras;
 
     public Cancion(String ruta_archivo, String nombre) {
         this.nombre = nombre;
-        this.ruta_archivo = ruta_archivo;        
+        this.ruta_archivo = ruta_archivo;
         letra_renglones = new ArrayList<>();
     }
 
@@ -34,8 +34,8 @@ public class Cancion {
      */
     public void leer_cancion() {
         if (leer_archivo()) {
-            frecuencia_letras = Utilidades.getMoldeTabla(calcular_frecuencia_letras(letra_renglones));
-            Utilidades.imprimir(frecuencia_letras);
+            frecuencia_letras = new int[30][30];
+            calcular_frecuencia_letras();
         }
     }
 
@@ -68,48 +68,35 @@ public class Cancion {
     /**
      * metodo que permite calcular la frecuencia de letras de la canción
      *
-     * @param cancion
-     * @return
      */
-    public String[][] calcular_frecuencia_letras(ArrayList<String> cancion) {
+    public void calcular_frecuencia_letras() {
 
         char[] vocabulario = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o',
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ',', '.', ' '};
 
-        String ma[][] = new String[31][31];
-        int[][] matriz = new int[30][30];
-
-        for (int i = 0; i < cancion.size(); i++) {
+        for (int i = 0; i < letra_renglones.size(); i++) {
             for (int j = 0; j < vocabulario.length; j++) {
-                for (int k = 0; k < cancion.get(i).length(); k++) {
-                    if (vocabulario[j] == cancion.get(i).charAt(k)) {
+                for (int k = 0; k < letra_renglones.get(i).length(); k++) {
+                    if (vocabulario[j] == letra_renglones.get(i).charAt(k)) {
                         if ((k - 1) >= 0) {
-                            char x = cancion.get(i).charAt(k - 1);
+                            char x = letra_renglones.get(i).charAt(k - 1);
                             int index = new String(vocabulario).indexOf(x);
-
-//                            System.out.println("Cadena : " + x + " Vocabulario index : " + new String(vocabulario).indexOf(x) + " Vocabulario letra"
-//                                    + ": " + vocabulario[new String(vocabulario).indexOf(x)]);
-//                            System.out.println("j: " + j + " index: " + index);
-
-
-                            if(index > 0){
-                                matriz[j][index] += 1;
-                            }
                             
+                            if(index != -1){
+                                frecuencia_letras[j][index] += 1;
+                            }
                         }
                     }
                 }
             }
         }
-
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[0].length; j++) {
-                ma[i + 1][j + 1] = String.valueOf(matriz[i][j]);
+        
+        for(int i = 0; i < frecuencia_letras.length; i++){
+            for(int j = 0; j < frecuencia_letras.length; j++){
+                System.out.print(frecuencia_letras[i][j] + " ");
             }
+            System.out.println("");
         }
-
-        matriz = null;        
-        return ma;
     }
 
     /**
@@ -117,7 +104,7 @@ public class Cancion {
      *
      * @return
      */
-    public String[][] getFrecuencia_letras() {
+    public int[][] getFrecuencia_letras() {
         return frecuencia_letras;
     }
 
