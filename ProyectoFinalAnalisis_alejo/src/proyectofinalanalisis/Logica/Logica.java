@@ -7,6 +7,8 @@ package proyectofinalanalisis.Logica;
 
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 
 /**
  *
@@ -15,6 +17,13 @@ import java.util.ArrayList;
 public class Logica {
 
     private ArrayList<Genero> generos = new ArrayList<>();
+    private String[][] frecuencia_letras;
+    
+    
+    //Punto 7
+    private char[] caracteres;
+    private double[] probabilidades;
+
 
     /**
      * metodo que permite cargar los generos de la carpeta de banco
@@ -38,7 +47,7 @@ public class Logica {
 
                     // inicializamos el genero por la carpeta
                     Genero tmpGenero = new Genero(ficheros[x].getPath(), ficheros[x].getName());
-                    
+
                     // cargamos la configuracion del genero
                     tmpGenero.cargar_configuracion();
 
@@ -50,6 +59,8 @@ public class Logica {
 
             }
         }
+
+        cargar_letras();
 
     }
 
@@ -64,6 +75,24 @@ public class Logica {
 
         }
 
+    }
+
+
+    /**
+     * 
+     * @param caracter
+     * @param tamano 
+     */
+    private void generarVectores(char caracter, int tamano) {
+        caracteres = new char[tamano + 1];
+        caracteres[0] = caracter;
+        probabilidades = new double[tamano];        
+        double numAleatorio;       
+
+        for (int i = 0; i < tamano; i++) {
+            numAleatorio = Math.random() * 1 + 0;
+            probabilidades[i] = numAleatorio;
+        }
     }
 
 }

@@ -31,8 +31,6 @@ public class Genero implements Runnable {
     public String getNombre() {
         return nombre;
     }
-    
-    
 
     /**
      * metodo que permite cargar el archivo de configuracion del genero
@@ -77,28 +75,87 @@ public class Genero implements Runnable {
 
                     // inicializamos la cancion con la ruta del archivo                    
                     Cancion tmpCancion = new Cancion(ficheros[x].getPath(), ficheros[x].getName());
-                    
+
                     // leemos la cancion
                     tmpCancion.leer_cancion();
 
                     // agregamos la lista de canciones al archivo
                     lista_canciones.add(tmpCancion);
-                    
+
                     break;
                 }
-                
-                
-
             }
         }
     }
+
+    /**
+     * metodo que permite calcular la frecuencia de letras de todas las
+     * canciones
+     */
+    public void calcular_frecuencia_letras() {
+
+        // recorremos todas las listas de canciones
+        for (int i = 0; i < lista_canciones.size(); i++) {
+
+            // tamaño de la matriz de frecuencia acumulada de letras de la canción
+            int tamano_matriz_acumlada = frecuencia_acumulada.length;
+
+            // iteramos las filas de la matriz acumalada
+            for (int a = 1; a < tamano_matriz_acumlada; a++) {
+
+                // iteramos las columnas de la matriz acumulada
+                for (int b = 1; b < tamano_matriz_acumlada; b++) {
+
+                    // tamaño de la matriz de frecuencia de letras de la canción
+                    int tamano_matriz = lista_canciones.get(i).getFrecuencia_letras().length;
+
+                    // recorrer la matriz de frecuencia de letras de cada una de las canciones: iteramos cada fila
+                    for (int j = 1; j < tamano_matriz; j++) {
+
+                        // iteramos las columnas de la matriz de frecuencia de letras de cada una de las canciones 
+                        for (int k = 1; k < tamano_matriz; k++) {
+
+                            // obtenemos la suma almacenada 
+                            try {
+                                // casteamos a enteros los valores de las matrices
+                                int suma_almacenada = Integer.parseInt(frecuencia_acumulada[a][b]);
+                                int frecuencia_letra = Integer.parseInt(lista_canciones.get(i).getFrecuencia_letras()[j][k]);
+
+                                // almacenamos la suma de matrices
+                                frecuencia_acumulada[a][b] = "" + (suma_almacenada + frecuencia_letra);
+
+                            } catch (NumberFormatException exception) {
+                                System.err.println("Ocurrió un error con el calculo de la matriz, existe una cadena, error: " + exception.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("MATRIZZZZZZZZ FRECUENCI ACUMULADA");
+        System.out.println("");
+
+        for (int i = 0; i < frecuencia_acumulada.length; i++) {
+            for (int j = 0; j < frecuencia_acumulada.length; j++) {
+                System.out.print(frecuencia_acumulada[i][j]);
+            }
+            System.out.println("");
+        }
+
+    }
+    
+    
+    
     
 
     @Override
     public void run() {
-        
+
         cargar_canciones();
-        
+
+        calcular_frecuencia_letras();
+
     }
 
 }
