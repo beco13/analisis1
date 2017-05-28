@@ -37,29 +37,43 @@ public class InterfazPrincipal extends javax.swing.JFrame {
      */
     private void generarCancion() {               
         if (txtLetra.getText().length() > 1) {
+            
             txtLetra.setForeground(Color.red);       
+            
             lblGenerando.setText("El campo letra debe contener un solo caracter.");
+            
             return;
         } 
         
         int tamano;
         
         try{
+            
             tamano = Integer.parseInt(txtTamano.getText());
+            
         }catch(NumberFormatException e){
+            
             txtTamano.setForeground(Color.red); 
+            
             lblGenerando.setText("El tamaño debe ser un número.");
+            
             return;
         }
         
         //compositor.inicializarProgressBar(lblGenerando, progressbar);
         
         char caracter = txtLetra.getText().charAt(0);
+        
         if(!compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano)){
+            
             lblGenerando.setText("Error al generar la nueva canción.");
+        
         }else{
+            
             lblGenerando.setText("Canción generada!");
-            InterfazReproducir interfazReproducir = new InterfazReproducir(this);
+            
+            InterfazReproducir interfazReproducir = new InterfazReproducir(compositor.getCaracteres(), compositor.getProbabilidades(), compositor.getTiempo(), cmbGenero.getSelectedItem().toString(), compositor.getProbabilidades_trabajas());
+            
             interfazReproducir.setVisible(true);
         }
     }  
@@ -159,6 +173,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panelPrincipal.add(progressbar);
         progressbar.setBounds(10, 260, 306, 14);
 
+        lblGenerando.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblGenerando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         panelPrincipal.add(lblGenerando);
         lblGenerando.setBounds(0, 220, 330, 29);
@@ -200,7 +215,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemMenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemMenuSalirActionPerformed
-        // TODO add your handling code here:
+        System.exit(0);
     }//GEN-LAST:event_itemMenuSalirActionPerformed
 
     private void txtLetraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLetraMouseClicked

@@ -5,23 +5,72 @@
  */
 package interfaz;
 
+import java.util.Properties;
+
 /**
  *
  * @author xJoni
  */
 public class InterfazReproducir extends javax.swing.JFrame {
 
-    private InterfazPrincipal interfazPrincipal;
-    
     /**
      * Constructor de la clase InterfazReproducir
-     * @param interfazPrincipal interfaz principal del programa
+     *
+     * @param cancion arreglo que contiene los caracteres que componen la
+     * canción
+     * @param probabilidades arreglo con las probabilidades utilizadas para
+     * crear la canción
+     * @param tiempo en minutos y segundos que tardo la aplicación en generar la
+     * canción
+     * @param genero nombre del género de la canción creada
+     * @param probabilidades_trabajadas son los valores de las probabilidades
+     * trabajadas
      */
-    public InterfazReproducir(InterfazPrincipal interfazPrincipal) {
+    public InterfazReproducir(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas) {
         initComponents();
-        setSize(1280, 720);
+        setSize(800, 620);
         setLocationRelativeTo(null);
-        this.interfazPrincipal = interfazPrincipal;
+        cargar_informacion(cancion, probabilidades, tiempo, genero, probabilidades_trabajadas);
+    }
+
+    /**
+     * Se encarga de cargar toda la información en la ventana
+     *
+     * @param cancion
+     * @param probabilidades
+     * @param tiempo
+     */
+    private void cargar_informacion(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas) {
+        txtTiempo.setText(tiempo);
+        txtGenero.setText(genero);
+
+        txtProbabilidadesGenero.setText("Bachata: " + probabilidades_trabajadas.getProperty("bachata")
+                + "\nBalada: " + probabilidades_trabajadas.getProperty("balada")
+                + "\nMerengue: " + probabilidades_trabajadas.getProperty("merengue")
+                + "\nPop: " + probabilidades_trabajadas.getProperty("pop")
+                + "\nSalsa: " + probabilidades_trabajadas.getProperty("salsa")
+                + "\nRanchera: " + probabilidades_trabajadas.getProperty("ranchera")
+                + "\nReggaeton: " + probabilidades_trabajadas.getProperty("reggaeton")
+                + "\nRock: " + probabilidades_trabajadas.getProperty("rock")
+                + "\nVallenato: " + probabilidades_trabajadas.getProperty("vallenato"));
+
+        txtCancionGenerada.setText("" + cancion[0]);
+
+        int contar_letras = 0;
+
+        for (int i = 0; i < probabilidades.length; i++) {
+
+            txtCancionGenerada.setText(txtCancionGenerada.getText() + cancion[i + 1]);
+
+            txtVectorProbabilidades.setText(txtVectorProbabilidades.getText() + "Probabilidad " + (i + 1) + " => " + probabilidades[i] + "\n");
+
+            if (contar_letras > 40 && cancion[i + 1] == ' ') {
+                txtCancionGenerada.setText(txtCancionGenerada.getText() + "\n");
+                contar_letras = 0;
+            }
+
+            contar_letras++;
+        }
     }
 
     /**
@@ -33,22 +82,130 @@ public class InterfazReproducir extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        panelPrincipal = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtCancionGenerada = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtProbabilidadesGenero = new javax.swing.JTextArea();
+        lblCancion = new javax.swing.JLabel();
+        lblProbabilidadesGenero = new javax.swing.JLabel();
+        lblGenero = new javax.swing.JLabel();
+        lblVectorProbabilidades = new javax.swing.JLabel();
+        lblTiempo = new javax.swing.JLabel();
+        txtGenero = new javax.swing.JTextField();
+        txtTiempo = new javax.swing.JTextField();
+        btnCerrar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtVectorProbabilidades = new javax.swing.JTextArea();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1280, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        panelPrincipal.setLayout(null);
+
+        txtCancionGenerada.setEditable(false);
+        txtCancionGenerada.setColumns(20);
+        txtCancionGenerada.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        txtCancionGenerada.setRows(5);
+        jScrollPane1.setViewportView(txtCancionGenerada);
+
+        panelPrincipal.add(jScrollPane1);
+        jScrollPane1.setBounds(20, 200, 495, 300);
+
+        txtProbabilidadesGenero.setEditable(false);
+        txtProbabilidadesGenero.setColumns(20);
+        txtProbabilidadesGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        txtProbabilidadesGenero.setRows(5);
+        jScrollPane2.setViewportView(txtProbabilidadesGenero);
+
+        panelPrincipal.add(jScrollPane2);
+        jScrollPane2.setBounds(535, 40, 225, 460);
+
+        lblCancion.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        lblCancion.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblCancion.setText("Canción:");
+        panelPrincipal.add(lblCancion);
+        lblCancion.setBounds(20, 170, 490, 30);
+
+        lblProbabilidadesGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        lblProbabilidadesGenero.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProbabilidadesGenero.setText("Probabilidades de cada género:");
+        panelPrincipal.add(lblProbabilidadesGenero);
+        lblProbabilidadesGenero.setBounds(535, 10, 220, 29);
+
+        lblGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        lblGenero.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblGenero.setText("Genero:");
+        panelPrincipal.add(lblGenero);
+        lblGenero.setBounds(20, 10, 220, 30);
+
+        lblVectorProbabilidades.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        lblVectorProbabilidades.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblVectorProbabilidades.setText("Vector probabilidades aleatorias:");
+        panelPrincipal.add(lblVectorProbabilidades);
+        lblVectorProbabilidades.setBounds(20, 80, 330, 30);
+
+        lblTiempo.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        lblTiempo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblTiempo.setText("Tiempo ocupado:");
+        panelPrincipal.add(lblTiempo);
+        lblTiempo.setBounds(295, 10, 220, 30);
+
+        txtGenero.setEditable(false);
+        txtGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        panelPrincipal.add(txtGenero);
+        txtGenero.setBounds(20, 40, 220, 40);
+
+        txtTiempo.setEditable(false);
+        txtTiempo.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        panelPrincipal.add(txtTiempo);
+        txtTiempo.setBounds(295, 40, 220, 40);
+
+        btnCerrar.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnCerrar.setText("Cerrar");
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarActionPerformed(evt);
+            }
+        });
+        panelPrincipal.add(btnCerrar);
+        btnCerrar.setBounds(20, 515, 740, 40);
+
+        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtVectorProbabilidades.setColumns(20);
+        txtVectorProbabilidades.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        txtVectorProbabilidades.setRows(5);
+        jScrollPane3.setViewportView(txtVectorProbabilidades);
+
+        panelPrincipal.add(jScrollPane3);
+        jScrollPane3.setBounds(20, 110, 495, 60);
+
+        getContentPane().add(panelPrincipal);
+        panelPrincipal.setBounds(0, 0, 780, 580);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCerrarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrar;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblCancion;
+    private javax.swing.JLabel lblGenero;
+    private javax.swing.JLabel lblProbabilidadesGenero;
+    private javax.swing.JLabel lblTiempo;
+    private javax.swing.JLabel lblVectorProbabilidades;
+    private javax.swing.JPanel panelPrincipal;
+    private javax.swing.JTextArea txtCancionGenerada;
+    private javax.swing.JTextField txtGenero;
+    private javax.swing.JTextArea txtProbabilidadesGenero;
+    private javax.swing.JTextField txtTiempo;
+    private javax.swing.JTextArea txtVectorProbabilidades;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,8 +6,8 @@
 package interfaz;
 
 import java.util.Properties;
+import javax.swing.JOptionPane;
 import logica.Compositor;
-
 
 /**
  *
@@ -25,42 +25,47 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
      */
     public InterfazCargarPropiedades(Compositor compositor) {
         initComponents();
-        setSize(218, 540);
+        setSize(218, 480);
         setLocationRelativeTo(null);
         this.compositor = compositor;
     }
 
     public void cargarPropiedades() {
-        //propiedades = compositor.cargarConfiguraciones(cmbGenero.getSelectedItem().toString().toLowerCase());
+        propiedades = compositor.cargar_configuracion(cmbGenero.getSelectedItem().toString().toLowerCase());
         if (propiedades != null) {
             modificarCampos();
         }
     }
-    
-    private void guardarPropiedades(){
+
+    private void guardarPropiedades() {        
+
+        propiedades = new Properties();
         propiedades.setProperty("bachata", txtBachata.getText());
         propiedades.setProperty("balada", txtBalada.getText());
         propiedades.setProperty("merengue", txtMerengue.getText());
         propiedades.setProperty("pop", txtPop.getText());
         propiedades.setProperty("ranchera", txtRanchera.getText());
-        propiedades.setProperty("reggae", txtReggae.getText());
         propiedades.setProperty("reggaeton", txtReggaeton.getText());
         propiedades.setProperty("rock", txtRock.getText());
         propiedades.setProperty("salsa", txtSalsa.getText());
         propiedades.setProperty("vallenato", txtVallenato.getText());
-//        compositor.guardarConfiguraciones(cmbGenero.getSelectedItem().toString().toLowerCase(), propiedades);
+        
+        if(compositor.guardar_configuraciones(cmbGenero.getSelectedItem().toString().toLowerCase(), propiedades)){
+            JOptionPane.showMessageDialog(this, "Valores guardados.");
+        }else{
+            JOptionPane.showMessageDialog(this, "Existe un error, no se guardarán los cambios. \nPor favor verifique: \n1. La suma de los valores sea igual a uno \n2. Solo sean valores númericos \n3. El valor del género seleccionado debe ser mayor a los demás géneros.");
+        }
     }
-    
-    private void modificarCampos(){
+
+    private void modificarCampos() {
         txtBachata.setText(propiedades.getProperty("bachata"));
         txtBalada.setText(propiedades.getProperty("balada"));
         txtMerengue.setText(propiedades.getProperty("merengue"));
         txtPop.setText(propiedades.getProperty("pop"));
+        txtSalsa.setText(propiedades.getProperty("salsa"));
         txtRanchera.setText(propiedades.getProperty("ranchera"));
-        txtReggae.setText(propiedades.getProperty("reggae"));
         txtReggaeton.setText(propiedades.getProperty("reggaeton"));
         txtRock.setText(propiedades.getProperty("rock"));
-        txtSalsa.setText(propiedades.getProperty("salsa"));
         txtVallenato.setText(propiedades.getProperty("vallenato"));
     }
 
@@ -81,7 +86,6 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         lblMerengue = new javax.swing.JLabel();
         lblPop = new javax.swing.JLabel();
         lblRanchera = new javax.swing.JLabel();
-        lblReggae = new javax.swing.JLabel();
         lblReggaeton = new javax.swing.JLabel();
         lblRock = new javax.swing.JLabel();
         lblSalsa = new javax.swing.JLabel();
@@ -90,11 +94,10 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         txtBalada = new javax.swing.JTextField();
         txtMerengue = new javax.swing.JTextField();
         txtPop = new javax.swing.JTextField();
+        txtSalsa = new javax.swing.JTextField();
         txtRanchera = new javax.swing.JTextField();
-        txtReggae = new javax.swing.JTextField();
         txtReggaeton = new javax.swing.JTextField();
         txtRock = new javax.swing.JTextField();
-        txtSalsa = new javax.swing.JTextField();
         txtVallenato = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
@@ -105,7 +108,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         panel.setLayout(null);
 
         cmbGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bachata", "Balada", "Merengue", "Pop", "Ranchera", "Reggae", "Reggaeton", "Rock", "Salsa", "Vallenato" }));
+        cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bachata", "Balada", "Merengue", "Pop", "Ranchera", "Reggaeton", "Rock", "Salsa", "Vallenato" }));
         cmbGenero.setFocusable(false);
         cmbGenero.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -123,92 +126,83 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         lblBachata.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblBachata.setText("Bachata");
         panel.add(lblBachata);
-        lblBachata.setBounds(10, 74, 44, 30);
+        lblBachata.setBounds(10, 75, 44, 30);
 
         lblBalada.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblBalada.setText("Balada");
         panel.add(lblBalada);
-        lblBalada.setBounds(10, 111, 38, 30);
+        lblBalada.setBounds(10, 110, 38, 30);
 
         lblMerengue.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblMerengue.setText("Merengue");
         panel.add(lblMerengue);
-        lblMerengue.setBounds(10, 148, 56, 30);
+        lblMerengue.setBounds(10, 145, 56, 30);
 
         lblPop.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblPop.setText("Pop");
         panel.add(lblPop);
-        lblPop.setBounds(10, 185, 21, 30);
+        lblPop.setBounds(10, 180, 21, 30);
 
         lblRanchera.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblRanchera.setText("Ranchera");
         panel.add(lblRanchera);
-        lblRanchera.setBounds(10, 222, 52, 30);
-
-        lblReggae.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        lblReggae.setText("Reggae");
-        panel.add(lblReggae);
-        lblReggae.setBounds(10, 259, 42, 30);
+        lblRanchera.setBounds(10, 215, 52, 30);
 
         lblReggaeton.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblReggaeton.setText("Reggaeton");
         panel.add(lblReggaeton);
-        lblReggaeton.setBounds(10, 296, 60, 30);
+        lblReggaeton.setBounds(10, 250, 60, 30);
 
         lblRock.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblRock.setText("Rock");
         panel.add(lblRock);
-        lblRock.setBounds(10, 334, 26, 30);
+        lblRock.setBounds(10, 285, 26, 30);
 
         lblSalsa.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblSalsa.setText("Salsa");
         panel.add(lblSalsa);
-        lblSalsa.setBounds(10, 371, 29, 30);
+        lblSalsa.setBounds(10, 320, 29, 30);
 
         lblVallenato.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         lblVallenato.setText("Vallenato");
         panel.add(lblVallenato);
-        lblVallenato.setBounds(10, 408, 52, 30);
+        lblVallenato.setBounds(10, 355, 52, 30);
 
         txtBachata.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtBachata);
-        txtBachata.setBounds(90, 74, 100, 30);
+        txtBachata.setBounds(90, 75, 100, 30);
 
         txtBalada.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtBalada);
-        txtBalada.setBounds(90, 111, 100, 30);
+        txtBalada.setBounds(90, 110, 100, 30);
 
         txtMerengue.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtMerengue);
-        txtMerengue.setBounds(90, 148, 100, 30);
+        txtMerengue.setBounds(90, 145, 100, 30);
 
         txtPop.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtPop);
-        txtPop.setBounds(90, 185, 100, 30);
-
-        txtRanchera.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        panel.add(txtRanchera);
-        txtRanchera.setBounds(90, 370, 100, 30);
-
-        txtReggae.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        panel.add(txtReggae);
-        txtReggae.setBounds(90, 222, 100, 30);
-
-        txtReggaeton.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        panel.add(txtReggaeton);
-        txtReggaeton.setBounds(90, 259, 100, 30);
-
-        txtRock.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        panel.add(txtRock);
-        txtRock.setBounds(90, 296, 100, 30);
+        txtPop.setBounds(90, 180, 100, 30);
 
         txtSalsa.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtSalsa);
-        txtSalsa.setBounds(90, 333, 100, 30);
+        txtSalsa.setBounds(90, 320, 100, 30);
+
+        txtRanchera.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        panel.add(txtRanchera);
+        txtRanchera.setBounds(90, 215, 100, 30);
+
+        txtReggaeton.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        panel.add(txtReggaeton);
+        txtReggaeton.setBounds(90, 250, 100, 30);
+
+        txtRock.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        panel.add(txtRock);
+        txtRock.setBounds(90, 285, 100, 30);
 
         txtVallenato.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         panel.add(txtVallenato);
-        txtVallenato.setBounds(90, 408, 100, 30);
+        txtVallenato.setBounds(90, 355, 100, 30);
 
         btnGuardar.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         btnGuardar.setText("Guardar");
@@ -220,7 +214,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
             }
         });
         panel.add(btnGuardar);
-        btnGuardar.setBounds(110, 452, 80, 30);
+        btnGuardar.setBounds(110, 390, 80, 30);
 
         btnSalir.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         btnSalir.setText("Salir");
@@ -232,10 +226,10 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
             }
         });
         panel.add(btnSalir);
-        btnSalir.setBounds(10, 452, 80, 30);
+        btnSalir.setBounds(10, 390, 80, 30);
 
         getContentPane().add(panel);
-        panel.setBounds(0, 0, 220, 500);
+        panel.setBounds(0, 0, 200, 440);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -263,7 +257,6 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
     private javax.swing.JLabel lblMerengue;
     private javax.swing.JLabel lblPop;
     private javax.swing.JLabel lblRanchera;
-    private javax.swing.JLabel lblReggae;
     private javax.swing.JLabel lblReggaeton;
     private javax.swing.JLabel lblRock;
     private javax.swing.JLabel lblSalsa;
@@ -275,7 +268,6 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
     private javax.swing.JTextField txtMerengue;
     private javax.swing.JTextField txtPop;
     private javax.swing.JTextField txtRanchera;
-    private javax.swing.JTextField txtReggae;
     private javax.swing.JTextField txtReggaeton;
     private javax.swing.JTextField txtRock;
     private javax.swing.JTextField txtSalsa;

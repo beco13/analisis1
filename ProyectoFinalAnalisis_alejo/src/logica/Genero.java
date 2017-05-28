@@ -6,7 +6,6 @@
 package logica;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -43,8 +42,14 @@ public class Genero implements Runnable {
 
         // verificamos que exista el archivo
         if (archivo_configuracion.exists()) {
+            
+            // creamos la nueva instancia
             configuracion = new ConfiguracionProbabilidades(ruta_archivo_config);
-            return true;
+            
+            // verificamos que se puedan cargar las propiedades
+            if(configuracion.leer_archivo()){
+                return true;
+            }            
         }
 
         return false;
@@ -164,5 +169,9 @@ public class Genero implements Runnable {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public ConfiguracionProbabilidades getConfiguracion() {
+        return configuracion;
     }
 }
