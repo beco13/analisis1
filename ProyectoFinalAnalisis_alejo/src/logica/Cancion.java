@@ -46,8 +46,6 @@ public class Cancion {
      */
     public boolean leer_archivo() {
 
-        System.out.println("archivo: " + ruta_archivo);
-
         try {
             FileReader fileReader = new FileReader(ruta_archivo);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -81,15 +79,15 @@ public class Cancion {
                         if ((k - 1) >= 0) {
                             char x = letra_renglones.get(i).charAt(k - 1);
                             int index = new String(vocabulario).indexOf(x);
-                            
-                            if(index != -1){
+
+                            if (index != -1) {
                                 frecuencia_letras[j][index] += 1;
                             }
                         }
                     }
                 }
             }
-        }       
+        }
     }
 
     /**
@@ -101,4 +99,12 @@ public class Cancion {
         return frecuencia_letras;
     }
 
+    /**
+     * Permite obtener el total de caracteres de la canción
+     *
+     * @return el número de caracteres.
+     */
+    public int getTotalLetras() {
+        return letra.length();
+    }
 }

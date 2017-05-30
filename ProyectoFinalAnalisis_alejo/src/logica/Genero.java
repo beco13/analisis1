@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author alejo
  */
-public class Genero implements Runnable {
+public class Genero extends Thread{
 
     private String nombre;
     private String ruta_carpeta;
@@ -20,13 +20,22 @@ public class Genero implements Runnable {
     private int[][] frecuencia_acumulada;
     private double[][] matriz_transicion;
     private ConfiguracionProbabilidades configuracion;
+    final String BANCO_CONFIGURACION = "banco/config";
+    
+    private CallbackGenero callBackFinalizar;
+    private int promedio_caracteres;
 
     public Genero(String ruta_carpeta, String nombre) {
         this.ruta_carpeta = ruta_carpeta;
         this.nombre = nombre;
         frecuencia_acumulada = new int[30][30];
-        matriz_transicion = new double[30][30];
+        matriz_transicion = new double[30][30];        
     }
+
+    public void setCallBackFinalizar(CallbackGenero callBackFinalizar) {
+        this.callBackFinalizar = callBackFinalizar;
+    }
+    
 
     /**
      * metodo que permite cargar el archivo de configuracion del genero
@@ -35,21 +44,21 @@ public class Genero implements Runnable {
      */
     public boolean cargar_configuracion() {
 
-        String ruta_archivo_config = Utilidades.BANCO_CONFIGURACION + "/" + nombre + ".properties";
+        String ruta_archivo_config = BANCO_CONFIGURACION + "/" + nombre + ".properties";
 
         // cargamos la ruta del archivo de configuracion
         File archivo_configuracion = new File(ruta_archivo_config);
 
         // verificamos que exista el archivo
         if (archivo_configuracion.exists()) {
-            
+
             // creamos la nueva instancia
             configuracion = new ConfiguracionProbabilidades(ruta_archivo_config);
-            
+
             // verificamos que se puedan cargar las propiedades
-            if(configuracion.leer_archivo()){
+            if (configuracion.leer_archivo()) {
                 return true;
-            }            
+            }
         }
 
         return false;
@@ -83,9 +92,12 @@ public class Genero implements Runnable {
 
                     // agregamos la lista de canciones al archivo
                     lista_canciones.add(tmpCancion);
+                    
                 }
             }
         }
+        
+        //System.out.println("Termino de cargar_canciones " + nombre);
     }
 
     /**
@@ -113,14 +125,8 @@ public class Genero implements Runnable {
             }
 
         }
-        System.out.println("MATRIZ FRECUENCIA");
-        for(int i = 0; i < frecuencia_acumulada.length; i++){
-            for(int j = 0; j < frecuencia_acumulada.length; j++){
-                System.out.print(frecuencia_acumulada[i][j] + " ");
-            }
-            System.out.println("");
-        }
-
+        
+        //System.out.println("Termino de calcular_freceucnia_letra " + nombre);
     }
 
     /**
@@ -129,31 +135,49 @@ public class Genero implements Runnable {
     private void calcular_matriz_transicion() {
 
         for (int i = 0; i < matriz_transicion.length; i++) {
-            
+
             int cantidadVeces = 0;
-            
+
             for (int j = 0; j < matriz_transicion.length; j++) {
                 cantidadVeces += frecuencia_acumulada[i][j];
             }
-            
+
             if (cantidadVeces != 0) {
-                
-                matriz_transicion[i][0] = ((double)frecuencia_acumulada[i][0] / (double)cantidadVeces);
+
+                matriz_transicion[i][0] = ((double) frecuencia_acumulada[i][0] / (double) cantidadVeces);
 
                 for (int j = 1; j < matriz_transicion.length; j++) {
-                    
-                    matriz_transicion[i][j] = ((double)frecuencia_acumulada[i][j] / (double)cantidadVeces) + matriz_transicion[i][j - 1];
+
+                    matriz_transicion[i][j] = ((double) frecuencia_acumulada[i][j] / (double) cantidadVeces) + matriz_transicion[i][j - 1];
                 }
             }
 
         }
-        System.out.println("MATRIZ TRANSICION");
-        for(int i = 0; i < matriz_transicion.length; i++){
-            for(int j = 0; j < matriz_transicion.length; j++){
-                System.out.print(matriz_transicion[i][j] + " ");
-            }
-            System.out.println("");
+        
+        //System.out.println("Termino de calcular_matriz_transicion " + nombre);
+
+    }
+    
+    /**
+     * metodo que recorre todas las canciones pertenecientes al genero para obtener el total de caracteares
+     */
+    public void calcular_promedio_caracteres(){
+
+        if(lista_canciones.isEmpty()){
+            promedio_caracteres = 0;
+            return;
         }
+        
+        int total_letras = 0;
+        
+        
+        for(int i = 0;i < lista_canciones.size(); i++){
+            total_letras += lista_canciones.get(i).getTotalLetras();
+        }
+        
+        promedio_caracteres = total_letras / lista_canciones.size();
+        
+        //System.out.println("Termino de calcular_promedio_caracteres " + nombre);
     }
 
     @Override
@@ -162,8 +186,15 @@ public class Genero implements Runnable {
         cargar_canciones();
 
         calcular_frecuencia_letras();
-        
+
         calcular_matriz_transicion();
+        
+        calcular_promedio_caracteres();
+        
+        //System.out.println("Retorno callback " + nombre);
+        
+        callBackFinalizar.callback(nombre);
+       
 
     }
 
@@ -173,5 +204,13 @@ public class Genero implements Runnable {
 
     public ConfiguracionProbabilidades getConfiguracion() {
         return configuracion;
+    }
+
+    public int getPromedio_caracteres() {
+        return promedio_caracteres;
+    }
+
+    public double[][] getMatriz_transicion() {
+        return matriz_transicion;
     }
 }

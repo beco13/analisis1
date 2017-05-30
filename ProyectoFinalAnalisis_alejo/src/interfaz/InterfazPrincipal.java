@@ -6,7 +6,10 @@
 package interfaz;
 
 import java.awt.Color;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import logica.Compositor;
+import logica.CallbackCompositor;
 
 /**
  *
@@ -15,7 +18,7 @@ import logica.Compositor;
 public class InterfazPrincipal extends javax.swing.JFrame {
 
     private final Compositor compositor;
-    
+
     /**
      * Constructor de la clase VentanaPrincipal
      */
@@ -23,10 +26,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         initComponents();
         setSize(330, 520);
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         compositor = new Compositor();
     }
-    
-    private void configurarProbabilidades(){
+
+    private void configurarProbabilidades() {
         InterfazCargarPropiedades interfazCargarPropiedades = new InterfazCargarPropiedades(compositor);
         interfazCargarPropiedades.cargarPropiedades();
         interfazCargarPropiedades.setVisible(true);
@@ -35,48 +39,58 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     /**
      *
      */
-    private void generarCancion() {               
+    private void generarCancion() {
         if (txtLetra.getText().length() > 1) {
-            
-            txtLetra.setForeground(Color.red);       
-            
+
+            txtLetra.setForeground(Color.red);
+
             lblGenerando.setText("El campo letra debe contener un solo caracter.");
-            
+
             return;
-        } 
-        
+        }
+
         int tamano;
-        
-        try{
-            
+
+        try {
+
             tamano = Integer.parseInt(txtTamano.getText());
-            
-        }catch(NumberFormatException e){
-            
-            txtTamano.setForeground(Color.red); 
-            
-            lblGenerando.setText("El tamaño debe ser un número.");
-            
-            return;
+
+        } catch (NumberFormatException e) {
+
+            if (!txtTamano.getText().equals("Tamaño")) {
+                txtTamano.setForeground(Color.red);
+
+                lblGenerando.setText("El tamaño debe ser un número.");
+
+                return;
+            }
+
+            tamano = 0;
         }
+
+        compositor.inicializar_barra_progreso(lblGenerando, progressbar);
+
+        char caracter = txtLetra.getText().charAt(0);        
         
-        //compositor.inicializarProgressBar(lblGenerando, progressbar);
-        
-        char caracter = txtLetra.getText().charAt(0);
-        
-        if(!compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano)){
+        compositor.setCancion_creada(new CallbackCompositor() {
             
-            lblGenerando.setText("Error al generar la nueva canción.");
-        
-        }else{
-            
-            lblGenerando.setText("Canción generada!");
-            
-            InterfazReproducir interfazReproducir = new InterfazReproducir(compositor.getCaracteres(), compositor.getProbabilidades(), compositor.getTiempo(), cmbGenero.getSelectedItem().toString(), compositor.getProbabilidades_trabajas());
-            
-            interfazReproducir.setVisible(true);
+            @Override
+            public void callback(boolean estado) {
+                if (estado) {
+                    lblGenerando.setText("Canción generada!");
+                    InterfazReproducir interfazReproducir = new InterfazReproducir(compositor.getCaracteres(), compositor.getProbabilidades(), compositor.getTiempo(), cmbGenero.getSelectedItem().toString(), compositor.getProbabilidades_trabajas());
+                    interfazReproducir.setVisible(true);
+                } else {
+                    lblGenerando.setForeground(Color.red);
+                    lblGenerando.setText("Error al generar la nueva canción.");
+                }
+            }
         }
-    }  
+        );
+        
+        compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano);        
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -107,6 +121,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panelPrincipal.setLayout(null);
 
         btnConfigurarProbabilidades.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnConfigurarProbabilidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/crear-nuevo-boton-del-lapiz.png"))); // NOI18N
         btnConfigurarProbabilidades.setText("Configurar Probabilidades");
         btnConfigurarProbabilidades.setBorderPainted(false);
         btnConfigurarProbabilidades.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -120,6 +135,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         btnConfigurarProbabilidades.setBounds(10, 290, 306, 40);
 
         btnConfigurarProbabilidades1.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnConfigurarProbabilidades1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/cabeza-pensante.png"))); // NOI18N
         btnConfigurarProbabilidades1.setText("Generar Canción");
         btnConfigurarProbabilidades1.setBorderPainted(false);
         btnConfigurarProbabilidades1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -221,7 +237,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private void txtLetraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtLetraMouseClicked
         txtLetra.setForeground(Color.black);
         if (txtLetra.getText().equals("Letra")) {
-            txtLetra.setText("");            
+            txtLetra.setText("");
         }
     }//GEN-LAST:event_txtLetraMouseClicked
 
@@ -232,6 +248,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtLetraFocusLost
 
     private void btnConfigurarProbabilidades1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigurarProbabilidades1ActionPerformed
+        lblGenerando.setForeground(Color.black);
         lblGenerando.setText("Generando canción...");
         generarCancion();
     }//GEN-LAST:event_btnConfigurarProbabilidades1ActionPerformed
@@ -249,7 +266,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private void txtTamanoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTamanoMouseClicked
         txtLetra.setForeground(Color.black);
         if (txtTamano.getText().equals("Tamaño")) {
-            txtTamano.setText("");            
+            txtTamano.setText("");
         }
     }//GEN-LAST:event_txtTamanoMouseClicked
 

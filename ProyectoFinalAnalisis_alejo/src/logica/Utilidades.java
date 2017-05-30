@@ -11,15 +11,13 @@ package logica;
  */
 public class Utilidades {
 
-    final static String BANCO_CANCIONES = "banco/canciones";
-    final static String BANCO_CONFIGURACION = "banco/config";
 
     /**
      * metodo que permite crear una tabla vacia lista para usar
      *
      * @return
      */
-    public static String[][] getMoldeTabla() {
+    public String[][] getMoldeTabla() {
 
         // almacenamos los simbolos que van a interactuar en la tabla
         String simbolos = "abcdefghijklmnñopqrstuvwxyz,. ";
@@ -30,38 +28,14 @@ public class Utilidades {
             molde[0][i + 1] = Character.toString(simbolos.charAt(i));
             molde[i + 1][0] = Character.toString(simbolos.charAt(i));
         }
+
+        for(int i = 1; i < molde.length; i++){
+            for(int j = 1; j < molde.length; j++){
+                molde[i][j] = "0";
+            }
+        }
         
-         for(int a = 1; a < molde.length; a++){
-            for(int b = 1; b < molde.length; b++){
-                molde[a][b] = "0";
-            }
-        }
-
         return molde;
-    }
-    
-    
-    public static String[][] getMoldeTabla( String[][] molde) {
-
-        // almacenamos los simbolos que van a interactuar en la tabla
-        String simbolos = "abcdefghijklmnñopqrstuvwxyz,. ";
-
-        for (int i = 0; i < simbolos.length(); i++) {
-            molde[0][i + 1] = Character.toString(simbolos.charAt(i));
-            molde[i + 1][0] = Character.toString(simbolos.charAt(i));
-        }
-
-        return molde;
-    }
-    
-
-    public static void imprimir(String[][] matriz) {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[0].length; j++) {
-                System.out.print(matriz[i][j] + " ");
-            }
-            System.out.println();
-        }
     }
 
 }

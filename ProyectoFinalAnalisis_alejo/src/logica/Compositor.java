@@ -5,19 +5,24 @@
  */
 package logica;
 
+import interfaz.BarraProgreso;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 
 /**
  *
  * @author alejo
  */
-public class Compositor {
+public class Compositor extends Utilidades {
 
     private ArrayList<Genero> generos = new ArrayList<>();
     private String[][] matriz_transicion;
-    
+
     // Variable para almacenar las probabilidades trabajadas de un género
     private Properties probabilidades_trabajas;
 
@@ -31,14 +36,31 @@ public class Compositor {
     // Variable de tiempo de ejecución de la tarea
     private String tiempo;
 
+    // Variable barra de progreso
+    private BarraProgreso barra_progreso;
+
+    private HashMap<Character, Integer> popularidad_letras;
+    private Character letra_mas_popular;
+
+    final String BANCO_CANCIONES = "banco/canciones";
+
+    // variable de progreso
+    int progreso = 0;
+
+    CallbackCompositor cancion_creada;
+
     /**
      * Constructor de la clase compositor, se cargan los generos al inicializar
      * una instancia de la clase e iniciamos la matriz de transición
      */
     public Compositor() {
         cargar_generos();
-        matriz_transicion = Utilidades.getMoldeTabla();
+        matriz_transicion = super.getMoldeTabla();
         ejecutado = false;
+    }
+
+    public void setCancion_creada(CallbackCompositor cancion_creada) {
+        this.cancion_creada = cancion_creada;
     }
 
     /**
@@ -158,7 +180,7 @@ public class Compositor {
     private void cargar_generos() {
 
         // cargamos la ubicacion del directorio donde esta el banco de canciones
-        File directorio = new File(Utilidades.BANCO_CANCIONES);
+        File directorio = new File(BANCO_CANCIONES);
 
         // verificamos que exista
         if (directorio.exists()) {
@@ -172,7 +194,7 @@ public class Compositor {
                 // verificamo si el archivo es una carpeta
                 if (ficheros[x].isDirectory()) {
 
-                    // inicializamos el genero por la carpeta
+                    // inicializamos el genero por la carpeta, y le indicamos el callback a ejecutar cuando se inicialice el hilo
                     Genero tmpGenero = new Genero(ficheros[x].getPath(), ficheros[x].getName());
 
                     // cargamos la configuracion del genero
@@ -194,15 +216,14 @@ public class Compositor {
      * @param caracter primera caracter de la nueva canción
      * @param genero tipo de género de la nueva canción
      * @param tamano es la cantidad de caracteres que tendra la canción
-     * @return true si se crea la canción, falso si ocurre un error durante el
-     * proceso
      */
-    public boolean generar_cancion(char caracter, String genero, int tamano) {
+    public void generar_cancion(char caracter, String genero, int tamano) {
 
         // validamos que el caracter especificado por el usuario sea una letra
         if (!validar_caracter(caracter)) {
             System.err.println("No es un caracter válido.");
-            return false;
+            cancion_creada.callback(false);
+            return;
         }
 
         // inicia conteo de tiempo de ejecución de la tarea
@@ -211,32 +232,79 @@ public class Compositor {
         // si ya se ejecuto una vez, omite este paso
         if (!ejecutado) {
 
+            barra_progreso.modificarProgressBar(0, "Cargando aplicación base");
+
             // leer cada genero a través de un hilo
-            cargar_letras();
+            cargar_letras(caracter, genero, tamano, tiempo_inicial);
 
             // cambiamos el valor de la variable para que omita este paso en la próxima ocasión
             ejecutado = true;
+        } else {
+
+            progreso = 90;
+            // modificando el progressbar de que ya realizo la parte de cargar letras
+            barra_progreso.modificarProgressBar(progreso, "Letras de canción cargadas.");
+
+            terminar_cancion(caracter, genero, tamano, tiempo_inicial);
         }
+
+    }
+
+    private int obtener_promedio_caracteres_genero(String genero) {
+
+        // iteramos el arraylist de géneros en busca del género especificado
+        for (int i = 0; i < generos.size(); i++) {
+
+            // verifica que el género concuerde con el nombre especificado
+            if (generos.get(i).getNombre().equalsIgnoreCase(genero)) {
+                return generos.get(i).getPromedio_caracteres();
+            }
+        }
+
+        return 0;
+    }
+
+    private void terminar_cancion(char caracter, String genero, int tamano, long tiempo_inicial) {
 
         // calcular matriz de transición
         calcular_matriz_transicion(genero);
 
+        progreso += 5;
+        barra_progreso.modificarProgressBar(progreso, "Matriz de transición generada.");
+
+        // validamos que el tamaño no sea 0
+        if (tamano == 0) {
+            tamano = obtener_promedio_caracteres_genero(genero);
+        }
+
         // generamos los vectores que almacenarán la canción y las probabilidades aleatorias
         generar_vectores(caracter, tamano);
 
+        System.out.println("Vector generado");
+
         // llenar vector con la nueva canción
         crear_cancion();
+
+        System.out.println("Cancion creada");
+
+        progreso += 5;
+        barra_progreso.modificarProgressBar(progreso, "Canción generada.");
 
         // tiempo final de la tarea
         long tiempo_final = System.currentTimeMillis();
 
         // tiempo en segundos
-        long tiempo_segundos = (tiempo_inicial - tiempo_final) / 1000;
+        long tiempo_segundos = (tiempo_final - tiempo_inicial) / 1000;
+
+        System.out.println("Tiempo Resta " + (tiempo_final - tiempo_inicial) + " tiempo segundos " + tiempo_segundos);
 
         // pasamos el tiempo a minutos:segundos
         this.tiempo = calcular_tiempo(tiempo_segundos, 0);
 
-        return true;
+        System.out.println(this.tiempo);
+
+        // indicamos que ya se creo la cancion llamando el callback
+        cancion_creada.callback(true);
 
     }
 
@@ -250,7 +318,7 @@ public class Compositor {
             if (generos.get(i).getNombre().equalsIgnoreCase(genero)) {
 
                 genero_trabajar = generos.get(i);
-                
+
                 // asignamos las probabilidades que se trabajarán
                 probabilidades_trabajas = generos.get(i).getConfiguracion().getPropiedades();
                 break;
@@ -258,7 +326,21 @@ public class Compositor {
         }
 
         if (genero_trabajar != null) {
-            // Con eso se supone usted puede ya hacer su parte, el genero_trabajar es para que pueda estar llamando los valores para multiplicar
+            System.out.println("");
+            System.out.println("AQUIIIIIIII");
+            System.out.println("");
+            for (int i = 0; i < generos.size(); i++) {
+
+                System.out.println("");
+                System.out.println("Matriz del genero: " + generos.get(i).getNombre());
+                System.out.println("");
+                for (int j = 0; j < generos.get(i).getMatriz_transicion().length; j++) {
+                    for (int k = 0; k < generos.get(i).getMatriz_transicion().length; k++) {
+                        System.out.print(generos.get(i).getMatriz_transicion()[j][k] + " ");
+                    }
+                    System.out.println("");
+                }
+            }
         }
 
         return false;
@@ -297,25 +379,41 @@ public class Compositor {
      */
     private void crear_cancion() {
 
+        popularidad_letras = new HashMap<Character, Integer>();
+
         // iteramos el arreglo de caracteres
         for (int i = 0; i < probabilidades.length; i++) {
 
+            // identificamos la letra
+            char tmpChart = obtener_caracter(probabilidades[i], caracteres[i]);
+
+            // verificamos cuantas veces aparece
+            int total_letras = popularidad_letras.get(tmpChart) == null ? 0 : popularidad_letras.get(tmpChart);
+
+            // gaurdamos el valor de la cantidad de veces que ha aparecido
+            popularidad_letras.put(tmpChart, total_letras + 1);
+
             //guarda el nuevo caracter de la canción
-            caracteres[i + 1] = obtener_caracter(probabilidades[i], caracteres[i]);
+            caracteres[i + 1] = tmpChart;
         }
 
-        System.out.println("La canción: ");
-        int cont = 0;
-        for (int i = 0; i < caracteres.length; i++) {
-            System.out.print(caracteres[i]);
-            cont++;
-            if (cont == 20) {
-                System.out.println("");
-                cont = 0;
+        verificar_letra_mas_repetida();
+    }
+
+    private void verificar_letra_mas_repetida() {
+
+        char mostKey = ' ';
+        int mostValue = 0;
+
+        for (Map.Entry<Character, Integer> entry : popularidad_letras.entrySet()) {
+            if (entry.getValue() > mostValue) {
+                mostKey = entry.getKey();
+                mostValue = entry.getValue();
             }
         }
 
-        System.out.println("");
+        letra_mas_popular = mostKey;
+
     }
 
     /**
@@ -381,9 +479,24 @@ public class Compositor {
         return caracter >= 'a' && caracter <= 'z' || caracter == 'ñ';
     }
 
-    public void cargar_letras() {
+    public void cargar_letras(char caracter, String genero, int tamano, long tiempo_inicial) {
 
         for (int i = 0; i < generos.size(); i++) {
+
+            generos.get(i).setCallBackFinalizar(
+                    new CallbackGenero() {
+                @Override
+                public void callback(String nombre_genero) {
+                    progreso += 10;
+                    barra_progreso.modificarProgressBar(progreso, "Finalizo de cargar el género: " + nombre_genero);
+
+                    if (progreso == 90) {
+                        barra_progreso.modificarProgressBar(progreso, "Todos los géneros han sido cargados");
+                        terminar_cancion(caracter, genero, tamano, tiempo_inicial);
+                    }
+                }
+            });
+
             // cargamos el genero (hilo)
             Thread tmpThreadGenero = new Thread(generos.get(i), generos.get(i).getNombre());
 
@@ -425,6 +538,16 @@ public class Compositor {
         }
     }
 
+    /**
+     *
+     * @param lbl_generando
+     * @param progressbar
+     */
+    public void inicializar_barra_progreso(JLabel lbl_generando, JProgressBar progressbar) {
+        barra_progreso = new BarraProgreso(lbl_generando, progressbar);
+        barra_progreso.execute();
+    }
+
     public String getTiempo() {
         return tiempo;
     }
@@ -439,5 +562,9 @@ public class Compositor {
 
     public Properties getProbabilidades_trabajas() {
         return probabilidades_trabajas;
+    }
+
+    public Character getLetra_mas_popular() {
+        return letra_mas_popular;
     }
 }

@@ -6,6 +6,7 @@
 package interfaz;
 
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import logica.Compositor;
 
@@ -27,6 +28,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         initComponents();
         setSize(218, 480);
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         this.compositor = compositor;
     }
 
@@ -101,6 +103,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         txtVallenato = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
+        lblFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -205,28 +208,36 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         txtVallenato.setBounds(90, 355, 100, 30);
 
         btnGuardar.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/guardar.png"))); // NOI18N
         btnGuardar.setText("Guardar");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setFocusable(false);
+        btnGuardar.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarActionPerformed(evt);
             }
         });
         panel.add(btnGuardar);
-        btnGuardar.setBounds(110, 390, 80, 30);
+        btnGuardar.setBounds(90, 390, 100, 30);
 
         btnSalir.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/cerrar-pequeño.png"))); // NOI18N
         btnSalir.setText("Salir");
         btnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSalir.setFocusable(false);
+        btnSalir.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalirActionPerformed(evt);
             }
         });
         panel.add(btnSalir);
-        btnSalir.setBounds(10, 390, 80, 30);
+        btnSalir.setBounds(10, 390, 75, 30);
+
+        lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo-propiedades.png"))); // NOI18N
+        panel.add(lblFondo);
+        lblFondo.setBounds(0, 0, 200, 440);
 
         getContentPane().add(panel);
         panel.setBounds(0, 0, 200, 440);
@@ -254,6 +265,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbGenero;
     private javax.swing.JLabel lblBachata;
     private javax.swing.JLabel lblBalada;
+    private javax.swing.JLabel lblFondo;
     private javax.swing.JLabel lblMerengue;
     private javax.swing.JLabel lblPop;
     private javax.swing.JLabel lblRanchera;
