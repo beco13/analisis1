@@ -6,7 +6,8 @@
 package interfaz;
 
 import java.util.Properties;
-
+import com.sun.speech.freetts.*;
+import javax.swing.ImageIcon;
 /**
  *
  * @author xJoni
@@ -30,6 +31,7 @@ public class InterfazReproducir extends javax.swing.JFrame {
         initComponents();
         setSize(800, 620);
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         cargar_informacion(cancion, probabilidades, tiempo, genero, probabilidades_trabajadas);
     }
 
@@ -72,6 +74,16 @@ public class InterfazReproducir extends javax.swing.JFrame {
             contar_letras++;
         }
     }
+    
+    private void cantar(){
+        VoiceManager vm =  VoiceManager.getInstance();
+        
+        Voice voice = vm.getVoice("kevin16");
+        
+        voice.allocate();        
+        
+        voice.speak(txtCancionGenerada.getText());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,23 +106,24 @@ public class InterfazReproducir extends javax.swing.JFrame {
         lblTiempo = new javax.swing.JLabel();
         txtGenero = new javax.swing.JTextField();
         txtTiempo = new javax.swing.JTextField();
+        btnCantar = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtVectorProbabilidades = new javax.swing.JTextArea();
+        lblFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
         panelPrincipal.setLayout(null);
 
-        txtCancionGenerada.setEditable(false);
         txtCancionGenerada.setColumns(20);
         txtCancionGenerada.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         txtCancionGenerada.setRows(5);
         jScrollPane1.setViewportView(txtCancionGenerada);
 
         panelPrincipal.add(jScrollPane1);
-        jScrollPane1.setBounds(20, 200, 495, 300);
+        jScrollPane1.setBounds(20, 200, 495, 250);
 
         txtProbabilidadesGenero.setEditable(false);
         txtProbabilidadesGenero.setColumns(20);
@@ -161,8 +174,24 @@ public class InterfazReproducir extends javax.swing.JFrame {
         panelPrincipal.add(txtTiempo);
         txtTiempo.setBounds(295, 40, 220, 40);
 
+        btnCantar.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnCantar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/parlante-de-musica-con-sonido.png"))); // NOI18N
+        btnCantar.setText("Cantar");
+        btnCantar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCantar.setFocusable(false);
+        btnCantar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCantarActionPerformed(evt);
+            }
+        });
+        panelPrincipal.add(btnCantar);
+        btnCantar.setBounds(20, 460, 495, 40);
+
         btnCerrar.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/cerrar.png"))); // NOI18N
         btnCerrar.setText("Cerrar");
+        btnCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCerrar.setFocusable(false);
         btnCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCerrarActionPerformed(evt);
@@ -181,6 +210,10 @@ public class InterfazReproducir extends javax.swing.JFrame {
         panelPrincipal.add(jScrollPane3);
         jScrollPane3.setBounds(20, 110, 495, 60);
 
+        lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo-reproducir.png"))); // NOI18N
+        panelPrincipal.add(lblFondo);
+        lblFondo.setBounds(0, 0, 780, 580);
+
         getContentPane().add(panelPrincipal);
         panelPrincipal.setBounds(0, 0, 780, 580);
 
@@ -191,12 +224,18 @@ public class InterfazReproducir extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
+    private void btnCantarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCantarActionPerformed
+        cantar();
+    }//GEN-LAST:event_btnCantarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCantar;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblCancion;
+    private javax.swing.JLabel lblFondo;
     private javax.swing.JLabel lblGenero;
     private javax.swing.JLabel lblProbabilidadesGenero;
     private javax.swing.JLabel lblTiempo;

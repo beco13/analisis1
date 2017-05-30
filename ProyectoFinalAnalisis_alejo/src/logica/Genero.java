@@ -7,8 +7,6 @@ package logica;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -99,7 +97,7 @@ public class Genero extends Thread{
             }
         }
         
-        System.out.println("Termino de cargar_canciones " + nombre);
+        //System.out.println("Termino de cargar_canciones " + nombre);
     }
 
     /**
@@ -128,7 +126,7 @@ public class Genero extends Thread{
 
         }
         
-        System.out.println("Termino de calcular_freceucnia_letra " + nombre);
+        //System.out.println("Termino de calcular_freceucnia_letra " + nombre);
     }
 
     /**
@@ -156,7 +154,7 @@ public class Genero extends Thread{
 
         }
         
-        System.out.println("Termino de calcular_matriz_transicion " + nombre);
+        //System.out.println("Termino de calcular_matriz_transicion " + nombre);
 
     }
     
@@ -179,7 +177,7 @@ public class Genero extends Thread{
         
         promedio_caracteres = total_letras / lista_canciones.size();
         
-        System.out.println("Termino de calcular_promedio_caracteres " + nombre);
+        //System.out.println("Termino de calcular_promedio_caracteres " + nombre);
     }
 
     @Override
@@ -193,7 +191,7 @@ public class Genero extends Thread{
         
         calcular_promedio_caracteres();
         
-        System.out.println("Retorno callback " + nombre);
+        //System.out.println("Retorno callback " + nombre);
         
         callBackFinalizar.callback(nombre);
        

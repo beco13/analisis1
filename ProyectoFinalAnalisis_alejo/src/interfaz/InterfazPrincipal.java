@@ -6,6 +6,8 @@
 package interfaz;
 
 import java.awt.Color;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import logica.Compositor;
 import logica.CallbackCompositor;
 
@@ -24,6 +26,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         initComponents();
         setSize(330, 520);
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         compositor = new Compositor();
     }
 
@@ -46,7 +49,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        int tamano = 0;
+        int tamano;
 
         try {
 
@@ -67,9 +70,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         compositor.inicializar_barra_progreso(lblGenerando, progressbar);
 
-        char caracter = txtLetra.getText().charAt(0);
-
-        compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano);
+        char caracter = txtLetra.getText().charAt(0);        
         
         compositor.setCancion_creada(new CallbackCompositor() {
             
@@ -86,8 +87,8 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             }
         }
         );
-
         
+        compositor.generar_cancion(caracter, cmbGenero.getSelectedItem().toString().toLowerCase(), tamano);        
 
     }
 
@@ -120,6 +121,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panelPrincipal.setLayout(null);
 
         btnConfigurarProbabilidades.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnConfigurarProbabilidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/crear-nuevo-boton-del-lapiz.png"))); // NOI18N
         btnConfigurarProbabilidades.setText("Configurar Probabilidades");
         btnConfigurarProbabilidades.setBorderPainted(false);
         btnConfigurarProbabilidades.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -133,6 +135,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         btnConfigurarProbabilidades.setBounds(10, 290, 306, 40);
 
         btnConfigurarProbabilidades1.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+        btnConfigurarProbabilidades1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/cabeza-pensante.png"))); // NOI18N
         btnConfigurarProbabilidades1.setText("Generar Canción");
         btnConfigurarProbabilidades1.setBorderPainted(false);
         btnConfigurarProbabilidades1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -245,6 +248,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtLetraFocusLost
 
     private void btnConfigurarProbabilidades1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigurarProbabilidades1ActionPerformed
+        lblGenerando.setForeground(Color.black);
         lblGenerando.setText("Generando canción...");
         generarCancion();
     }//GEN-LAST:event_btnConfigurarProbabilidades1ActionPerformed

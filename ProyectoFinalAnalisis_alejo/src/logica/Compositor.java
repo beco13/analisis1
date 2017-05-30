@@ -18,8 +18,8 @@ import javax.swing.JProgressBar;
  *
  * @author alejo
  */
-public class Compositor extends Utilidades{
-    
+public class Compositor extends Utilidades {
+
     private ArrayList<Genero> generos = new ArrayList<>();
     private String[][] matriz_transicion;
 
@@ -38,15 +38,15 @@ public class Compositor extends Utilidades{
 
     // Variable barra de progreso
     private BarraProgreso barra_progreso;
-    
+
     private HashMap<Character, Integer> popularidad_letras;
     private Character letra_mas_popular;
-    
+
     final String BANCO_CANCIONES = "banco/canciones";
 
     // variable de progreso
     int progreso = 0;
-    
+
     CallbackCompositor cancion_creada;
 
     /**
@@ -58,7 +58,7 @@ public class Compositor extends Utilidades{
         matriz_transicion = super.getMoldeTabla();
         ejecutado = false;
     }
-    
+
     public void setCancion_creada(CallbackCompositor cancion_creada) {
         this.cancion_creada = cancion_creada;
     }
@@ -80,12 +80,12 @@ public class Compositor extends Utilidades{
 
                 // verificamos que se hayan cargado las propiedades
                 if (generos.get(i).cargar_configuracion()) {
-                    
+
                     return generos.get(i).getConfiguracion().getPropiedades();
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -103,7 +103,7 @@ public class Compositor extends Utilidades{
 
         // valor mayor por ser su género
         double valor_mayor;
-        
+
         try {
             // asignamos los valores al arreglo
             valores[0] = Double.parseDouble(propiedades.getProperty("bachata"));
@@ -118,7 +118,7 @@ public class Compositor extends Utilidades{
 
             // asignamos el valor del género seleccionado
             valor_mayor = Double.parseDouble(propiedades.getProperty(nombre));
-            
+
         } catch (NumberFormatException exception) {
             exception.getStackTrace();
             return false;
@@ -132,12 +132,12 @@ public class Compositor extends Utilidades{
 
                 // verifica que el género concuerde con el nombre especificado
                 if (generos.get(i).getNombre().equalsIgnoreCase(nombre)) {
-                    
+
                     return generos.get(i).getConfiguracion().guardar(propiedades);
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -154,7 +154,7 @@ public class Compositor extends Utilidades{
 
         // Variable donde almacenaremos la suma de los valores
         double suma = 0;
-        
+
         for (int i = 0; i < valores.length; i++) {
 
             // Verificamos que el valor del género seleccionado sea mayor a los demás
@@ -170,7 +170,7 @@ public class Compositor extends Utilidades{
                 return false;
             }
         }
-        
+
         return suma > 0.99;
     }
 
@@ -202,9 +202,9 @@ public class Compositor extends Utilidades{
 
                     // agregamos el genero a la lista de generos
                     generos.add(tmpGenero);
-                    
+
                 }
-                
+
             }
         }
     }
@@ -231,7 +231,7 @@ public class Compositor extends Utilidades{
 
         // si ya se ejecuto una vez, omite este paso
         if (!ejecutado) {
-            
+
             barra_progreso.modificarProgressBar(0, "Cargando aplicación base");
 
             // leer cada genero a través de un hilo
@@ -240,16 +240,16 @@ public class Compositor extends Utilidades{
             // cambiamos el valor de la variable para que omita este paso en la próxima ocasión
             ejecutado = true;
         } else {
-            
+
             progreso = 90;
             // modificando el progressbar de que ya realizo la parte de cargar letras
             barra_progreso.modificarProgressBar(progreso, "Letras de canción cargadas.");
-            
+
             terminar_cancion(caracter, genero, tamano, tiempo_inicial);
         }
-        
+
     }
-    
+
     private int obtener_promedio_caracteres_genero(String genero) {
 
         // iteramos el arraylist de géneros en busca del género especificado
@@ -260,15 +260,15 @@ public class Compositor extends Utilidades{
                 return generos.get(i).getPromedio_caracteres();
             }
         }
-        
+
         return 0;
     }
-    
+
     private void terminar_cancion(char caracter, String genero, int tamano, long tiempo_inicial) {
 
         // calcular matriz de transición
         calcular_matriz_transicion(genero);
-        
+
         progreso += 5;
         barra_progreso.modificarProgressBar(progreso, "Matriz de transición generada.");
 
@@ -279,14 +279,14 @@ public class Compositor extends Utilidades{
 
         // generamos los vectores que almacenarán la canción y las probabilidades aleatorias
         generar_vectores(caracter, tamano);
-        
+
         System.out.println("Vector generado");
 
         // llenar vector con la nueva canción
         crear_cancion();
-        
+
         System.out.println("Cancion creada");
-        
+
         progreso += 5;
         barra_progreso.modificarProgressBar(progreso, "Canción generada.");
 
@@ -294,51 +294,222 @@ public class Compositor extends Utilidades{
         long tiempo_final = System.currentTimeMillis();
 
         // tiempo en segundos
-        long tiempo_segundos = (tiempo_inicial - tiempo_final) / 1000;
+        long tiempo_segundos = (tiempo_final - tiempo_inicial) / 1000;
+
+        System.out.println("Tiempo Resta " + (tiempo_final - tiempo_inicial) + " tiempo segundos " + tiempo_segundos);
 
         // pasamos el tiempo a minutos:segundos
         this.tiempo = calcular_tiempo(tiempo_segundos, 0);
-        
+
         System.out.println(this.tiempo);
 
         // indicamos que ya se creo la cancion llamando el callback
         cancion_creada.callback(true);
-        
+
     }
-    
-    private boolean calcular_matriz_transicion(String genero) {
-        
+
+    /**
+     * metodo publico que permite calcular los valores de la matriz transicion
+     *
+     * @param genero
+     * @return
+     */
+    public boolean calcular_matriz_transicion(String genero) {
         Genero genero_trabajar = null;
+
         // iteramos el arraylist de géneros en busca del género especificado
         for (int i = 0; i < generos.size(); i++) {
-
             // verifica que el género concuerde con el nombre especificado
             if (generos.get(i).getNombre().equalsIgnoreCase(genero)) {
-                
                 genero_trabajar = generos.get(i);
-
                 // asignamos las probabilidades que se trabajarán
                 probabilidades_trabajas = generos.get(i).getConfiguracion().getPropiedades();
                 break;
             }
         }
-        
-        if (genero_trabajar != null) {
-            
-            for (int i = 0; i < generos.size(); i++) {
-                
-                if (generos.get(i).getNombre().equals("rock")) {
-                    for (int j = 0; j < generos.get(i).getMatriz_transicion().length; j++) {
-                        for (int k = 0; k < generos.get(i).getMatriz_transicion().length; k++) {
-                            matriz_transicion [j + 1] [k+1] += Double.parseDouble(matriz_transicion [j + 1] [k+1]) + ( genero_trabajar.getConfiguracion().getRock() * generos.get(i).getMatriz_transicion()[j][k]);
-                        }
-                    }
-                }
-                
+
+        matriz_transicion = generar_tabla_matriz_transicion(calcular_matriz_transicion(0, generos.size() - 1, genero_trabajar));
+
+        return false;
+    }
+
+    /**
+     * metodo que permite transcribir los valores obtenidos para la matriz
+     * transccion a forma de tabla en String
+     *
+     * @param matriz
+     * @return
+     */
+    private String[][] generar_tabla_matriz_transicion(double[][] matriz) {
+        String[][] aux = new String[31][31];
+
+        // almacenamos los simbolos que van a interactuar en la tabla
+        String simbolos = "abcdefghijklmnñopqrstuvwxyz,. ";
+
+        // iteramos sobre la fila
+        for (int i = 0; i < 31; i++) {
+
+            // asignamos a la primera fila y a la primera columna su letra correpondiente
+            aux[0][i + 1] = Character.toString(simbolos.charAt(i));
+            aux[i + 1][0] = Character.toString(simbolos.charAt(i));
+
+            // iteramos sobre la columna
+            for (int j = 0; j < 31; j++) {
+
+                // y asignamos en la casilla el valor de la matriz entrante
+                aux[i + 1][j + 1] = Double.toString(matriz[i][j]);
             }
         }
-        
-        return false;
+
+        return aux;
+    }
+
+    /**
+     * metodo que permite operar la matriz de cada genero con el valor
+     * correspondiente al genero seleccionado por el usuario
+     *
+     * @param tmpGenero
+     * @param generoSeleccioado
+     * @return
+     */
+    private double[][] operar_probabilidad(Genero tmpGenero, Genero generoSeleccioado) {
+
+        double[][] aux = new double[30][30];
+        double[][] matriz_transicion_genero = tmpGenero.getMatriz_transicion();
+        ConfiguracionProbabilidades configGenero = generoSeleccioado.getConfiguracion();
+
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+
+                double operador = 0.0;
+
+                switch (tmpGenero.getNombre()) {
+
+                    case "bachata":
+                        operador = configGenero.getBachata();
+                        break;
+                    case "balada":
+                        operador = configGenero.getBalada();
+                        break;
+                    case "merengue":
+                        operador = configGenero.getMerengue();
+                        break;
+                    case "pop":
+                        operador = configGenero.getPop();
+                        break;
+                    case "ranchera":
+                        operador = configGenero.getRanchera();
+                        break;
+                    case "reggaeton":
+                        operador = configGenero.getReggaeton();
+                        break;
+                    case "rock":
+                        operador = configGenero.getRock();
+                        break;
+                    case "salsa":
+                        operador = configGenero.getSalsa();
+                        break;
+                    case "vallenato":
+                        operador = configGenero.getVallenato();
+                        break;
+                    default:
+                        operador = 1;
+                        break;
+
+                }
+
+                aux[i][j] = matriz_transicion_genero[i][j] * operador;
+            }
+        }
+
+        return aux;
+
+    }
+
+    /**
+     * metodo que se encarga de completar las filas para que el la ultima
+     * columna de 1
+     *
+     * @param fila
+     * @param aux
+     */
+    private void completar_fila(int fila, double[][] aux) {
+
+        // obtengo el valor de la ultima columna
+        double total = aux[fila][29];
+
+        // verifico cuanto me hace falta para llegar a 1
+        double resta = 1 - total;
+
+        // calculo cuando debo sumar por cada uno
+        double asignar = resta / 30;
+
+        // empezamos a sumar por cada columna
+        for (int i = 0; i < 30; i++) {
+            aux[fila][i] = aux[fila][i] + asignar;
+        }
+    }
+
+    /**
+     * metodo que permite sumar la matriz operada de un genero con la de otro
+     * genero
+     *
+     * @param generoA
+     * @param generoB
+     * @return
+     */
+    private double[][] sumar_probabilidad(double[][] generoA, double[][] generoB) {
+        double[][] aux = new double[30][30];
+
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+                aux[i][j] = generoA[i][j] + generoB[i][j];
+            }
+
+            // verificamos si la fila esta completa
+            if (aux[i][29] < 0.999) {
+
+                // sino toca completar la fila para que la ultima columna de 1                
+                completar_fila(i, aux);
+            }
+
+        }
+
+        return aux;
+    }
+
+    /**
+     * metodo que permite calcular los valores de matriz transicion a manera de
+     * que funcione recursivamente sobre los generos que hay sobre la lista de
+     * generos
+     *
+     * @param inicio
+     * @param fin
+     * @param generoSeleccioado
+     * @return
+     */
+    private double[][] calcular_matriz_transicion(int inicio, int fin, Genero generoSeleccioado) {
+
+        // calculamos el total
+        int total = fin - inicio;
+
+        // verificamos si solo hay uno (caso base)
+        if (total == 1) {
+            // como llegamos hasta el total de uno a este genero se le opera por los valores del genero seleccionado
+            return operar_probabilidad(generos.get(inicio), generoSeleccioado);
+        }
+
+        // hayamos la mitad
+        int mitad = total / 2;
+
+        // calculamos el valor por el lado izquierdo hasta la mitad
+        double[][] generoA = calcular_matriz_transicion(inicio, mitad, generoSeleccioado);
+
+        // calculamos el valor por el lado derecho depsues de la mitad hasta el final
+        double[][] generoB = calcular_matriz_transicion(inicio + mitad, fin, generoSeleccioado);
+
+        // y sumamos las matrices
+        return sumar_probabilidad(generoA, generoB);
     }
 
     /**
@@ -373,7 +544,7 @@ public class Compositor extends Utilidades{
      * Crea la nueva canción, almacenandola en el arreglo de caracteres
      */
     private void crear_cancion() {
-        
+
         popularidad_letras = new HashMap<Character, Integer>();
 
         // iteramos el arreglo de caracteres
@@ -391,33 +562,24 @@ public class Compositor extends Utilidades{
             //guarda el nuevo caracter de la canción
             caracteres[i + 1] = tmpChart;
         }
-        
-        int cont = 0;
-        for (int i = 0; i < caracteres.length; i++) {
-            System.out.print(caracteres[i]);
-            cont++;
-            if (cont == 20) {
-                cont = 0;
-            }
-        }
-        
+
         verificar_letra_mas_repetida();
     }
-    
+
     private void verificar_letra_mas_repetida() {
-        
+
         char mostKey = ' ';
         int mostValue = 0;
-        
+
         for (Map.Entry<Character, Integer> entry : popularidad_letras.entrySet()) {
             if (entry.getValue() > mostValue) {
                 mostKey = entry.getKey();
                 mostValue = entry.getValue();
             }
         }
-        
+
         letra_mas_popular = mostKey;
-        
+
     }
 
     /**
@@ -456,7 +618,7 @@ public class Compositor extends Utilidades{
 
                         // si es asi retorna ese caracter inmediatamente
                         return matriz_transicion[0][i].charAt(0);
-                        
+
                     } // pregunta si la probabilidad en curso es menor a la buscada (la más cercanada a la buscada)
                     else if (aux < valor_probabilidad) {
 
@@ -469,7 +631,7 @@ public class Compositor extends Utilidades{
                 break;
             }
         }
-        
+
         return caracter_nuevo;
     }
 
@@ -482,33 +644,33 @@ public class Compositor extends Utilidades{
     private boolean validar_caracter(char caracter) {
         return caracter >= 'a' && caracter <= 'z' || caracter == 'ñ';
     }
-    
+
     public void cargar_letras(char caracter, String genero, int tamano, long tiempo_inicial) {
-        
+
         for (int i = 0; i < generos.size(); i++) {
 
-            // cargamos el genero (hilo)
-            Thread tmpThreadGenero = new Thread(generos.get(i), generos.get(i).getNombre());
-
-            // inicializamos el genero
-            tmpThreadGenero.start();
-            
             generos.get(i).setCallBackFinalizar(
                     new CallbackGenero() {
                 @Override
                 public void callback(String nombre_genero) {
                     progreso += 10;
                     barra_progreso.modificarProgressBar(progreso, "Finalizo de cargar el género: " + nombre_genero);
-                    
+
                     if (progreso == 90) {
                         barra_progreso.modificarProgressBar(progreso, "Todos los géneros han sido cargados");
                         terminar_cancion(caracter, genero, tamano, tiempo_inicial);
                     }
                 }
             });
-            
+
+            // cargamos el genero (hilo)
+            Thread tmpThreadGenero = new Thread(generos.get(i), generos.get(i).getNombre());
+
+            // inicializamos el genero
+            tmpThreadGenero.start();
+
         }
-        
+
     }
 
     /**
@@ -551,20 +713,24 @@ public class Compositor extends Utilidades{
         barra_progreso = new BarraProgreso(lbl_generando, progressbar);
         barra_progreso.execute();
     }
-    
+
     public String getTiempo() {
         return tiempo;
     }
-    
+
     public char[] getCaracteres() {
         return caracteres;
     }
-    
+
     public double[] getProbabilidades() {
         return probabilidades;
     }
-    
+
     public Properties getProbabilidades_trabajas() {
         return probabilidades_trabajas;
+    }
+
+    public Character getLetra_mas_popular() {
+        return letra_mas_popular;
     }
 }
