@@ -6,6 +6,8 @@
 package proyectofinalanalisis;
 
 import interfaz.InterfazPrincipal;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -17,7 +19,13 @@ public class ProyectoFinalAnalisis {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        try {
+            UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            
+        }
+        
         InterfazPrincipal interfazPrincipal = new InterfazPrincipal();
         interfazPrincipal.setVisible(true);
     }

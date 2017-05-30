@@ -55,7 +55,7 @@ public class Compositor extends Utilidades {
      */
     public Compositor() {
         cargar_generos();
-        matriz_transicion = super.getMoldeTabla();
+        //matriz_transicion = super.getMoldeTabla();
         ejecutado = false;
     }
 
@@ -268,6 +268,15 @@ public class Compositor extends Utilidades {
 
         // calcular matriz de transición
         calcular_matriz_transicion(genero);
+        
+        System.out.println("Matriz");
+        System.out.println("");
+        for (int i = 0; i < matriz_transicion.length; i++) {
+            for (int j = 0; j < matriz_transicion.length; j++) {
+                System.out.print(matriz_transicion[i][j] + " ");
+            }
+            System.out.println("");
+        }
 
         progreso += 5;
         barra_progreso.modificarProgressBar(progreso, "Matriz de transición generada.");
@@ -328,7 +337,17 @@ public class Compositor extends Utilidades {
             }
         }
 
-        matriz_transicion = generar_tabla_matriz_transicion(calcular_matriz_transicion(0, generos.size() - 1, genero_trabajar));
+        // calculamos la matriz
+        double[][] tmpMatriz = calcular_matriz_transicion(0, generos.size() - 1, genero_trabajar);
+
+        for (int i = 0; i < 30; i++) {
+            if (tmpMatriz[i][29] < 0.99) {
+                completar_fila(i, tmpMatriz);
+            }
+        }
+
+        // transformamos la matriz
+        matriz_transicion = generar_tabla_matriz_transicion(tmpMatriz);
 
         return false;
     }
@@ -347,14 +366,14 @@ public class Compositor extends Utilidades {
         String simbolos = "abcdefghijklmnñopqrstuvwxyz,. ";
 
         // iteramos sobre la fila
-        for (int i = 0; i < 31; i++) {
+        for (int i = 0; i < 30; i++) {
 
             // asignamos a la primera fila y a la primera columna su letra correpondiente
             aux[0][i + 1] = Character.toString(simbolos.charAt(i));
             aux[i + 1][0] = Character.toString(simbolos.charAt(i));
 
             // iteramos sobre la columna
-            for (int j = 0; j < 31; j++) {
+            for (int j = 0; j < 30; j++) {
 
                 // y asignamos en la casilla el valor de la matriz entrante
                 aux[i + 1][j + 1] = Double.toString(matriz[i][j]);
@@ -439,14 +458,15 @@ public class Compositor extends Utilidades {
         double total = aux[fila][29];
 
         // verifico cuanto me hace falta para llegar a 1
-        double resta = 1 - total;
+        double resta = (double) 1 - total;
 
         // calculo cuando debo sumar por cada uno
-        double asignar = resta / 30;
+        double asignar = resta / (double) 30;
+        System.out.println("FILA " + fila + " " + total + " " + resta + " " + asignar);
 
         // empezamos a sumar por cada columna
         for (int i = 0; i < 30; i++) {
-            aux[fila][i] = aux[fila][i] + asignar;
+            aux[fila][i] += asignar;
         }
     }
 
@@ -465,14 +485,6 @@ public class Compositor extends Utilidades {
             for (int j = 0; j < 30; j++) {
                 aux[i][j] = generoA[i][j] + generoB[i][j];
             }
-
-            // verificamos si la fila esta completa
-            if (aux[i][29] < 0.999) {
-
-                // sino toca completar la fila para que la ultima columna de 1                
-                completar_fila(i, aux);
-            }
-
         }
 
         return aux;
@@ -503,7 +515,7 @@ public class Compositor extends Utilidades {
         int mitad = total / 2;
 
         // calculamos el valor por el lado izquierdo hasta la mitad
-        double[][] generoA = calcular_matriz_transicion(inicio, mitad, generoSeleccioado);
+        double[][] generoA = calcular_matriz_transicion(inicio, inicio + mitad, generoSeleccioado);
 
         // calculamos el valor por el lado derecho depsues de la mitad hasta el final
         double[][] generoB = calcular_matriz_transicion(inicio + mitad, fin, generoSeleccioado);
