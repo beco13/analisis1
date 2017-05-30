@@ -29,7 +29,7 @@ public class InterfazReproducir extends javax.swing.JFrame {
      */
     public InterfazReproducir(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas) {
         initComponents();
-        setSize(800, 620);
+        setSize(785, 600);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         cargar_informacion(cancion, probabilidades, tiempo, genero, probabilidades_trabajadas);
@@ -113,10 +113,12 @@ public class InterfazReproducir extends javax.swing.JFrame {
         lblFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(null);
 
         panelPrincipal.setLayout(null);
 
+        txtCancionGenerada.setEditable(false);
         txtCancionGenerada.setColumns(20);
         txtCancionGenerada.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         txtCancionGenerada.setRows(5);
@@ -202,6 +204,7 @@ public class InterfazReproducir extends javax.swing.JFrame {
 
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+        txtVectorProbabilidades.setEditable(false);
         txtVectorProbabilidades.setColumns(20);
         txtVectorProbabilidades.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
         txtVectorProbabilidades.setRows(5);
@@ -212,7 +215,7 @@ public class InterfazReproducir extends javax.swing.JFrame {
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo-reproducir.png"))); // NOI18N
         panelPrincipal.add(lblFondo);
-        lblFondo.setBounds(0, 0, 780, 580);
+        lblFondo.setBounds(0, 0, 780, 575);
 
         getContentPane().add(panelPrincipal);
         panelPrincipal.setBounds(0, 0, 780, 580);

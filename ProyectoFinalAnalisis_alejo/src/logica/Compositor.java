@@ -18,9 +18,12 @@ import javax.swing.JProgressBar;
  *
  * @author alejo
  */
-public class Compositor extends Utilidades {
+public class Compositor {
 
+    // Generos
     private ArrayList<Genero> generos = new ArrayList<>();
+
+    // Matriz final para la creación de la canción
     private String[][] matriz_transicion;
 
     // Variable para almacenar las probabilidades trabajadas de un género
@@ -39,9 +42,11 @@ public class Compositor extends Utilidades {
     // Variable barra de progreso
     private BarraProgreso barra_progreso;
 
+    // Variables de la funcion del grafo
     private HashMap<Character, Integer> popularidad_letras;
     private Character letra_mas_popular;
 
+    // Dirección donde estan almacenados los archivos con las canciones
     final String BANCO_CANCIONES = "banco/canciones";
 
     // variable de progreso
@@ -55,12 +60,7 @@ public class Compositor extends Utilidades {
      */
     public Compositor() {
         cargar_generos();
-        //matriz_transicion = super.getMoldeTabla();
         ejecutado = false;
-    }
-
-    public void setCancion_creada(CallbackCompositor cancion_creada) {
-        this.cancion_creada = cancion_creada;
     }
 
     /**
@@ -268,7 +268,7 @@ public class Compositor extends Utilidades {
 
         // calcular matriz de transición
         calcular_matriz_transicion(genero);
-        
+
         System.out.println("Matriz");
         System.out.println("");
         for (int i = 0; i < matriz_transicion.length; i++) {
@@ -458,10 +458,11 @@ public class Compositor extends Utilidades {
         double total = aux[fila][29];
 
         // verifico cuanto me hace falta para llegar a 1
-        double resta = (double) 1 - total;
+        double resta = 1 - total;
 
         // calculo cuando debo sumar por cada uno
-        double asignar = resta / (double) 30;
+        double asignar = resta / 30;
+
         System.out.println("FILA " + fila + " " + total + " " + resta + " " + asignar);
 
         // empezamos a sumar por cada columna
@@ -557,7 +558,7 @@ public class Compositor extends Utilidades {
      */
     private void crear_cancion() {
 
-        popularidad_letras = new HashMap<Character, Integer>();
+        popularidad_letras = new HashMap<>();
 
         // iteramos el arreglo de caracteres
         for (int i = 0; i < probabilidades.length; i++) {
@@ -565,14 +566,14 @@ public class Compositor extends Utilidades {
             // identificamos la letra
             char tmpChart = obtener_caracter(probabilidades[i], caracteres[i]);
 
+            //guarda el nuevo caracter de la canción
+            caracteres[i + 1] = tmpChart;
+
             // verificamos cuantas veces aparece
             int total_letras = popularidad_letras.get(tmpChart) == null ? 0 : popularidad_letras.get(tmpChart);
 
-            // gaurdamos el valor de la cantidad de veces que ha aparecido
+            // guardamos el valor de la cantidad de veces que ha aparecido
             popularidad_letras.put(tmpChart, total_letras + 1);
-
-            //guarda el nuevo caracter de la canción
-            caracteres[i + 1] = tmpChart;
         }
 
         verificar_letra_mas_repetida();
@@ -608,34 +609,37 @@ public class Compositor extends Utilidades {
     private char obtener_caracter(double valor_probabilidad, char letra_actual) {
 
         // caracter a retornar que tenga la probabilidad más proxima
-        char caracter_nuevo = '?';
+        char caracter_nuevo = ' ';
 
         // iteramos las filas de la matriz de transicion
         for (int i = 1; i < matriz_transicion.length; i++) {
 
             // entra cuando encuentre en la matriz (fila) la letra que viene como parametro
-            if (matriz_transicion[0][i].charAt(0) == letra_actual) {
+            if (matriz_transicion[i][0].charAt(0) == letra_actual) {
 
                 // variable aux para castear los valores de la matriz de transicion
                 double aux;
 
-                // iteramos las columnas en busca de la probabilidad especficada como parámetro
+                // iteramos las columnas en busca de la probabilidad especificada como parámetro
                 for (int j = 1; j < matriz_transicion.length; j++) {
 
                     // asignamos el valor casteado
                     aux = Double.parseDouble(matriz_transicion[i][j]);
 
+                    System.out.println(aux + " " + valor_probabilidad);
+
                     // pregunta si la probabilidad en curso es igual a la de parámetro
                     if (aux == valor_probabilidad) {
 
                         // si es asi retorna ese caracter inmediatamente
-                        return matriz_transicion[0][i].charAt(0);
+                        return matriz_transicion[0][j].charAt(0);
 
                     } // pregunta si la probabilidad en curso es menor a la buscada (la más cercanada a la buscada)
                     else if (aux < valor_probabilidad) {
 
                         // se asigna el caracter con la probabilidad más cercana a la buscada
-                        caracter_nuevo = matriz_transicion[0][i].charAt(0);
+                        caracter_nuevo = matriz_transicion[0][j].charAt(0);
+                        System.out.println(caracter_nuevo);
                     }
                 }
 
@@ -744,5 +748,14 @@ public class Compositor extends Utilidades {
 
     public Character getLetra_mas_popular() {
         return letra_mas_popular;
+    }
+    
+    /**
+     * Metodo que permite asignar una nueva instancia del callback
+     *
+     * @param cancion_creada el nuevo callback
+     */
+    public void setCancion_creada(CallbackCompositor cancion_creada) {
+        this.cancion_creada = cancion_creada;
     }
 }

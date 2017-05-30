@@ -182,7 +182,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         txtLetra.setBounds(10, 350, 90, 40);
 
         cmbGenero.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
-        cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bachata", "Balada", "Merengue", "Pop", "Ranchera", "Reggae", "Reggaeton", "Rock", "Salsa", "Vallenato" }));
+        cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bachata", "Balada", "Merengue", "Pop", "Ranchera", "Reggaeton", "Rock", "Salsa", "Vallenato" }));
         cmbGenero.setFocusable(false);
         panelPrincipal.add(cmbGenero);
         cmbGenero.setBounds(220, 350, 90, 40);

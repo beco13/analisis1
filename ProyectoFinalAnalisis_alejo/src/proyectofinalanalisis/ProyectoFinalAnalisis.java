@@ -23,7 +23,7 @@ public class ProyectoFinalAnalisis {
         try {
             UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            
+            System.out.println("No cargo");
         }
         
         InterfazPrincipal interfazPrincipal = new InterfazPrincipal();

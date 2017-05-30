@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author alejo
  */
-public class Genero extends Thread{
+public class Genero extends Thread {
 
     private String nombre;
     private String ruta_carpeta;
@@ -21,7 +21,7 @@ public class Genero extends Thread{
     private double[][] matriz_transicion;
     private ConfiguracionProbabilidades configuracion;
     final String BANCO_CONFIGURACION = "banco/config";
-    
+
     private CallbackGenero callBackFinalizar;
     private int promedio_caracteres;
 
@@ -29,13 +29,12 @@ public class Genero extends Thread{
         this.ruta_carpeta = ruta_carpeta;
         this.nombre = nombre;
         frecuencia_acumulada = new int[30][30];
-        matriz_transicion = new double[30][30];        
+        matriz_transicion = new double[30][30];
     }
 
     public void setCallBackFinalizar(CallbackGenero callBackFinalizar) {
         this.callBackFinalizar = callBackFinalizar;
     }
-    
 
     /**
      * metodo que permite cargar el archivo de configuracion del genero
@@ -92,11 +91,11 @@ public class Genero extends Thread{
 
                     // agregamos la lista de canciones al archivo
                     lista_canciones.add(tmpCancion);
-                    
+
                 }
             }
         }
-        
+
         //System.out.println("Termino de cargar_canciones " + nombre);
     }
 
@@ -106,27 +105,46 @@ public class Genero extends Thread{
      */
     private void calcular_frecuencia_letras() {
 
-        // recorremos todas las listas de canciones
-        for (int i = 0; i < lista_canciones.size(); i++) {
+        frecuencia_acumulada = calcular_frecuencia_letras(0, lista_canciones.size() - 1);
 
-            // tamaño de la matriz de frecuencia de letras de la canción
-            int tamano_matriz = lista_canciones.get(i).getFrecuencia_letras().length;
+    }
 
-            // recorrer la matriz de frecuencia de letras de cada una de las canciones: iteramos cada fila
-            for (int j = 0; j < tamano_matriz; j++) {
+    private int[][] sumar_frecuencias(int[][] frecuenciaA, int[][] frecuenciaB) {
 
-                // iteramos las columnas de la matriz de frecuencia de letras de cada una de las canciones 
-                for (int k = 0; k < tamano_matriz; k++) {
+        int[][] aux = new int[30][30];
 
-                    // almacenamos la suma de matrices
-                    frecuencia_acumulada[j][k] += lista_canciones.get(i).getFrecuencia_letras()[j][k];
-
-                }
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+                aux[i][j] = frecuenciaA[i][j] + frecuenciaB[i][j];
             }
-
         }
-        
-        //System.out.println("Termino de calcular_freceucnia_letra " + nombre);
+
+        return aux;
+
+    }
+
+    private int[][] calcular_frecuencia_letras(int inicio, int fin) {
+
+        // calculamos el total
+        int total = fin - inicio;
+
+        // verificamos si solo hay uno (caso base)
+        if (total == 1) {
+            // como llegamos hasta el total de uno a este genero se le opera por los valores del genero seleccionado
+            return lista_canciones.get(inicio).getFrecuencia_letras();
+        }
+
+        // hayamos la mitad
+        int mitad = total / 2;
+
+        // calculamos el valor por el lado izquierdo hasta la mitad
+        int[][] frecuenciaA = calcular_frecuencia_letras(inicio, inicio + mitad);
+
+        // calculamos el valor por el lado derecho depsues de la mitad hasta el final
+        int[][] frecuenciaB = calcular_frecuencia_letras(inicio + mitad, fin);
+
+        // y sumamos las matrices
+        return sumar_frecuencias(frecuenciaA, frecuenciaB);
     }
 
     /**
@@ -153,30 +171,29 @@ public class Genero extends Thread{
             }
 
         }
-        
+
         //System.out.println("Termino de calcular_matriz_transicion " + nombre);
-
     }
-    
-    /**
-     * metodo que recorre todas las canciones pertenecientes al genero para obtener el total de caracteares
-     */
-    public void calcular_promedio_caracteres(){
 
-        if(lista_canciones.isEmpty()){
+    /**
+     * metodo que recorre todas las canciones pertenecientes al genero para
+     * obtener el total de caracteares
+     */
+    public void calcular_promedio_caracteres() {
+
+        if (lista_canciones.isEmpty()) {
             promedio_caracteres = 0;
             return;
         }
-        
+
         int total_letras = 0;
-        
-        
-        for(int i = 0;i < lista_canciones.size(); i++){
+
+        for (int i = 0; i < lista_canciones.size(); i++) {
             total_letras += lista_canciones.get(i).getTotalLetras();
         }
-        
+
         promedio_caracteres = total_letras / lista_canciones.size();
-        
+
         //System.out.println("Termino de calcular_promedio_caracteres " + nombre);
     }
 
@@ -188,13 +205,11 @@ public class Genero extends Thread{
         calcular_frecuencia_letras();
 
         calcular_matriz_transicion();
-        
+
         calcular_promedio_caracteres();
-        
+
         //System.out.println("Retorno callback " + nombre);
-        
         callBackFinalizar.callback(nombre);
-       
 
     }
 

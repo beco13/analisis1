@@ -26,7 +26,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
      */
     public InterfazCargarPropiedades(Compositor compositor) {
         initComponents();
-        setSize(218, 480);
+        setSize(205, 465);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
         this.compositor = compositor;
@@ -106,6 +106,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
         lblFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(null);
 
         panel.setLayout(null);
@@ -237,7 +238,7 @@ public class InterfazCargarPropiedades extends javax.swing.JFrame {
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/fondo-propiedades.png"))); // NOI18N
         panel.add(lblFondo);
-        lblFondo.setBounds(0, 0, 200, 440);
+        lblFondo.setBounds(0, 0, 200, 435);
 
         getContentPane().add(panel);
         panel.setBounds(0, 0, 200, 440);
