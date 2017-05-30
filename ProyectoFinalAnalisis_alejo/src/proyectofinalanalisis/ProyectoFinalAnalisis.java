@@ -5,7 +5,7 @@
  */
 package proyectofinalanalisis;
 
-import proyectofinalanalisis.Logica.Logica;
+import interfaz.InterfazPrincipal;
 
 /**
  *
@@ -18,11 +18,8 @@ public class ProyectoFinalAnalisis {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
-        
-        Logica logica = new Logica();
-        logica.cargar_generos();
-        
+        InterfazPrincipal interfazPrincipal = new InterfazPrincipal();
+        interfazPrincipal.setVisible(true);
     }
     
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectofinalanalisis.Logica;
+package logica;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 public class ConfiguracionProbabilidades {
 
     private String ruta_archivo;
+    private Properties propiedades;
 
     private double rock;
     private double pop;
@@ -35,17 +36,16 @@ public class ConfiguracionProbabilidades {
 
     public ConfiguracionProbabilidades(String ruta_archivo) {
         this.ruta_archivo = ruta_archivo;
-                
-        leer_archivo();
     }
 
     /**
      * metodo que permite cargar la información del objetvo desde el fichero
+     *
      * @return boolean
      */
     public boolean leer_archivo() {
 
-        Properties propiedades = new Properties();
+        propiedades = new Properties();
         InputStream entrada = null;
 
         try {
@@ -64,7 +64,7 @@ public class ConfiguracionProbabilidades {
             return false;
         }
 
-        // obtenemos las propiedades y las imprimimos            
+        // Guardamos los valores de las propiedades localmente           
         rock = Double.parseDouble(propiedades.getProperty("rock"));
         pop = Double.parseDouble(propiedades.getProperty("pop"));
         bachata = Double.parseDouble(propiedades.getProperty("bachata"));
@@ -78,14 +78,14 @@ public class ConfiguracionProbabilidades {
         return true;
     }
 
-    
     /**
      * metodo que permite guardar la información del objetvo en el fichero
-     * @return 
+     *
+     * @param propiedades
+     * @return
      */
-    public boolean guardar() {
+    public boolean guardar(Properties propiedades) {
 
-        Properties propiedades = new Properties();
         OutputStream salida = null;
 
         try {
@@ -95,36 +95,39 @@ public class ConfiguracionProbabilidades {
             return false;
         }
 
-        // asignamos los valores a las propiedades
-        propiedades.setProperty("rock", Double.toString(rock));
-        propiedades.setProperty("pop", Double.toString(pop));
-        propiedades.setProperty("bachata", Double.toString(bachata));
-        propiedades.setProperty("reggaeton", Double.toString(reggaeton));
-        propiedades.setProperty("balada", Double.toString(balada));
-        propiedades.setProperty("salsa", Double.toString(salsa));
-        propiedades.setProperty("vallenato", Double.toString(vallenato));
-        propiedades.setProperty("ranchera", Double.toString(ranchera));
-        propiedades.setProperty("merengue", Double.toString(merengue));
-
         try {
             // guardamos el archivo de propiedades en la carpeta de aplicación
             propiedades.store(salida, null);
+
         } catch (IOException ex) {
             Logger.getLogger(ConfiguracionProbabilidades.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
 
+        // Guardamos los valores de las propiedades localmente           
+        rock = Double.parseDouble(propiedades.getProperty("rock"));
+        pop = Double.parseDouble(propiedades.getProperty("pop"));
+        bachata = Double.parseDouble(propiedades.getProperty("bachata"));
+        reggaeton = Double.parseDouble(propiedades.getProperty("reggaeton"));
+        balada = Double.parseDouble(propiedades.getProperty("balada"));
+        salsa = Double.parseDouble(propiedades.getProperty("salsa"));
+        vallenato = Double.parseDouble(propiedades.getProperty("vallenato"));
+        ranchera = Double.parseDouble(propiedades.getProperty("ranchera"));
+        merengue = Double.parseDouble(propiedades.getProperty("merengue"));
+
         return true;
     }
 
-    
-    
     public String getRuta_archivo() {
         return ruta_archivo;
     }
 
     public void setRuta_archivo(String ruta_archivo) {
         this.ruta_archivo = ruta_archivo;
+    }
+
+    public Properties getPropiedades() {
+        return propiedades;
     }
 
     public double getRock() {
@@ -198,8 +201,5 @@ public class ConfiguracionProbabilidades {
     public void setMerengue(double merengue) {
         this.merengue = merengue;
     }
-    
-    
-    
 
 }
