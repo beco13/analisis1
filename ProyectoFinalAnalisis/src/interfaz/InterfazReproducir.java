@@ -8,6 +8,7 @@ package interfaz;
 import java.util.Properties;
 import com.sun.speech.freetts.*;
 import javax.swing.ImageIcon;
+
 /**
  *
  * @author xJoni
@@ -27,12 +28,12 @@ public class InterfazReproducir extends javax.swing.JFrame {
      * @param probabilidades_trabajadas son los valores de las probabilidades
      * trabajadas
      */
-    public InterfazReproducir(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas) {
+    public InterfazReproducir(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas, char letra_repetida) {
         initComponents();
         setSize(785, 600);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon("src/multimedia/logo.png").getImage());
-        cargar_informacion(cancion, probabilidades, tiempo, genero, probabilidades_trabajadas);
+        cargar_informacion(cancion, probabilidades, tiempo, genero, probabilidades_trabajadas, letra_repetida);
     }
 
     /**
@@ -42,7 +43,7 @@ public class InterfazReproducir extends javax.swing.JFrame {
      * @param probabilidades
      * @param tiempo
      */
-    private void cargar_informacion(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas) {
+    private void cargar_informacion(char[] cancion, double[] probabilidades, String tiempo, String genero, Properties probabilidades_trabajadas, char letra_repetida) {
         txtTiempo.setText(tiempo);
         txtGenero.setText(genero);
 
@@ -56,7 +57,11 @@ public class InterfazReproducir extends javax.swing.JFrame {
                 + "\nRock: " + probabilidades_trabajadas.getProperty("rock")
                 + "\nVallenato: " + probabilidades_trabajadas.getProperty("vallenato"));
 
-        txtCancionGenerada.setText("" + cancion[0]);
+        if (letra_repetida == ' ') {
+            txtCancionGenerada.setText("Letra que más paso por el grafo: es un espacio" + "\n" + cancion[0]);
+        } else {
+            txtCancionGenerada.setText("Letra que más paso por el grafo: " + letra_repetida + "\n" + cancion[0]);
+        }
 
         int contar_letras = 0;
 
@@ -74,14 +79,14 @@ public class InterfazReproducir extends javax.swing.JFrame {
             contar_letras++;
         }
     }
-    
-    private void cantar(){
-        VoiceManager vm =  VoiceManager.getInstance();
-        
+
+    private void cantar() {
+        VoiceManager vm = VoiceManager.getInstance();
+
         Voice voice = vm.getVoice("kevin16");
-        
-        voice.allocate();        
-        
+
+        voice.allocate();
+
         voice.speak(txtCancionGenerada.getText());
     }
 

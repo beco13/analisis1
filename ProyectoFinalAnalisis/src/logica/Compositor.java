@@ -289,15 +289,6 @@ public class Compositor {
         // calcular matriz de transición
         calcular_matriz_transicion(genero);
 
-        System.out.println("Matriz");
-        System.out.println("");
-        for (int i = 0; i < matriz_transicion.length; i++) {
-            for (int j = 0; j < matriz_transicion.length; j++) {
-                System.out.print(matriz_transicion[i][j] + " ");
-            }
-            System.out.println("");
-        }
-
         // modificamos el estado de la barra de progreso
         progreso += 5;
         barra_progreso.modificarProgressBar(progreso, "Matriz de transición generada.");

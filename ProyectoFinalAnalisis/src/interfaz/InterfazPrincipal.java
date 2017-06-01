@@ -39,7 +39,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
      *
      */
     private void generarCancion() {
-        if (txtLetra.getText().length() > 1) {
+        if (txtLetra.getText().length() > 1 || txtLetra.getText().isEmpty()) {
 
             txtLetra.setForeground(Color.red);
 
@@ -77,7 +77,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             public void callback(boolean estado) {
                 if (estado) {
                     lblGenerando.setText("Canción generada!");
-                    InterfazReproducir interfazReproducir = new InterfazReproducir(compositor.getCaracteres(), compositor.getProbabilidades(), compositor.getTiempo(), cmbGenero.getSelectedItem().toString(), compositor.getProbabilidades_trabajas());
+                    InterfazReproducir interfazReproducir = new InterfazReproducir(compositor.getCaracteres(), compositor.getProbabilidades(), compositor.getTiempo(), cmbGenero.getSelectedItem().toString(), compositor.getProbabilidades_trabajas(), compositor.getLetra_mas_popular());
                     interfazReproducir.setVisible(true);
                 } else {
                     lblGenerando.setForeground(Color.red);

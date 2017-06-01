@@ -59,7 +59,7 @@ public class Cancion {
 
             while ((cadena = bufferedReader.readLine()) != null) {
                 letra_renglones.add(cadena);
-                letra += cadena + " ";
+                letra += cadena;
             }
         } catch (IOException e) {
             System.err.println("Error al buscar el archivo, el sistema no encuentra la ruta de acceso especificado");
